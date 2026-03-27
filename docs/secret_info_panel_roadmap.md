@@ -74,6 +74,17 @@ The intended end state includes:
 8. Prefer narrow structural changes over broad rewrites.
 9. Keep the project practical, teachable, and repo-manageable.
 
+## `1.5.0.x` Family Continuity Note
+
+The next refactor should be read as a continuation of the `1.5.0.x` family’s hardening work rather than as a reset of the project.
+
+Carry these family-level interpretations forward:
+
+- treat routed receipt / ownership scaffolding as already-landed baseline work in `1.5.0.5`
+- treat compact routing diagnostics as a practical inspection surface, not as a large debug subsystem
+- preserve graceful interruption / failure cleanup as a cross-cutting hardening concern during near-term refactors
+- keep the next packet narrow and safety-oriented even while it prepares the next major revision
+
 ## Authoritative State Model To Target
 
 The next refactor should make this state ladder explicit:
