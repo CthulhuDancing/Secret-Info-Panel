@@ -14,14 +14,16 @@ The current script is still a sidebar-first secret-interiority generator. It alr
 
 The current architecture also already distinguishes between prompt inputs, a rebuilt prompt artifact, current displayed output, and generated runtime state. That separation should remain the foundation of future work.
 
-As of `1.4.21` first pass, the project baseline also now includes:
+As of `1.5.0.5` baseline, the project now includes:
 
 - body-only editing for the current secret-info output
 - lightweight leading-label normalization and sanitization at live contract boundaries
 - tempStorage-backed in-session draft handling for edits
+- routed-state ownership/receipt scaffolding and signature tracking
+- lightweight receipt summary diagnostics
 - config/default-only label scaffolding via `secretInfoLabel` without making label configurability a runtime-wide behavior yet
 
-These changes should be treated as baseline hardening, not as a shift in the broader roadmap.
+These changes should be treated as baseline hardening plus route-state scaffolding, not as completion of full routing rollout.
 
 ---
 
@@ -473,7 +475,7 @@ That means doing these things next:
 - define target adapters before full UI redesign
 - define sync receipts and target ownership markers
 
-This remains the right start point because `1.4.21` first pass hardened the editable-output contract without changing the broader build order.
+This remains the right start point because the `1.5.0.5` baseline hardened the editable-output contract and introduced routing/receipt scaffolding without changing the broader build order.
 
 ---
 

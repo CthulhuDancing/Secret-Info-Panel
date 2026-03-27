@@ -9,13 +9,13 @@ Use this document to track implementation progress across roadmap packages and t
 ## Current Project State
 
 - Project: Secret Info Panel
-- Roadmap Reference: `SecretInfoPanel_Roadmap_v1_1.md`
-- Current Working Version: `1.4.21`
+- Roadmap Reference: `docs/secret_info_panel_roadmap.md`
+- Current Working Version: `1.5.0.5`
 - Current Focus Package: `P1 — Canonical Data Contract`
-- Last Completed Package: `Baseline hardening pass through 1.4.21 (pre-package roadmap alignment)`
-- Last Updated: `2026-03-25`
+- Last Completed Package: `1.5.0.5 routed-state receipt/ownership skeleton and diagnostics exposure`
+- Last Updated: `2026-03-27`
 
-### Baseline State Confirmed in `1.4.21`
+### Baseline State Confirmed in `1.5.0.5`
 
 - Sidebar-first control surface remains the active operating model.
 - Four-layer storage/workflow separation remains intact:
@@ -29,11 +29,13 @@ Use this document to track implementation progress across roadmap packages and t
 - Secret-info output is now edited as body-only content.
 - Lightweight leading-label normalization/sanitization exists at live contract boundaries.
 - tempStorage is now used for ephemeral in-session edit drafts only.
+- Routed-state receipt/ownership scaffolding exists (target-level ownership + receipt statuses).
+- Diagnostics now expose route receipt summary and latest receipt sweep timestamp.
 - `secretInfoLabel` exists as config/default scaffolding only and is not yet a runtime-wide configurable behavior.
 
 ### Immediate Interpretation
 
-`1.4.21` should be treated as a narrow baseline-hardening revision, not as completion of a roadmap package. The next active roadmap work begins from that hardened baseline.
+`1.5.0.5` should be treated as a contract-and-routing skeleton baseline. The next active work should focus on validating and applying routes safely (not broad UI or architecture rewrites).
 
 ---
 
@@ -41,12 +43,12 @@ Use this document to track implementation progress across roadmap packages and t
 
 | Package | Name | Status | Branch / Version | Notes |
 |---|---|---|---|---|
-| P1 | Canonical Data Contract | In Progress | `1.4.21` baseline established | Body-only editing and live-boundary sanitization landed, but routed-state ownership, editable-vs-routed receipts, and formal downstream contract work are still open. |
+| P1 | Canonical Data Contract | In Progress | `1.5.0.5` baseline established | Canonical/output split and routed-state receipt scaffolding landed; next work is consistency hardening and route-apply safety. |
 | P2 | Config Registry and UI Wiring | Not Started |  | Small config scaffolding exists, but there is no full registry, complete UI wiring, or diagnostics-backed resolved config layer yet. |
-| P3 | Routing and Splicing Engine | Not Started |  | No production routing into Memory, Author's Note, or Lorebook yet. |
+| P3 | Routing and Splicing Engine | In Progress | `1.5.0.5` skeleton only | Routing status/ownership scaffolding exists; production apply/clear/resync workflows still open. |
 | P4 | Dense Editor UI Surface | Not Started |  | Sidebar remains the current editing surface; larger editor migration has not started. |
 | P5 | Prompt and Multi-Character Quality | Not Started |  | Current prompt behavior remains stable but broader quality and multi-character work has not started as a package. |
-| P6 | Diagnostics, Sync, and Validation | Not Started |  | Stable diagnostics exist for the current sidebar tool, but route-state/sync-state validation work has not started. |
+| P6 | Diagnostics, Sync, and Validation | In Progress | `1.5.0.5` diagnostics baseline | Receipt summaries landed; validation/error handling and actionable sync flows remain open. |
 
 Status values: Not Started, In Progress, Blocked, Complete, Deferred
 
@@ -62,7 +64,7 @@ Record only decisions that should carry forward into later chats.
 - Dense editing moves to a bottom-bar or alternate editor surface.
 - Script-owned routing must use ownership markers and safe replacement only.
 - Build new revisions from the stable live `.naiscript` base, not by adopting broad fork rewrites.
-- `1.4.21` remains a narrow hardening pass, not a roadmap-phase rewrite.
+- `1.5.0.5` remains a narrow contract/routing skeleton pass, not a roadmap-phase rewrite.
 - Secret-info editing is body-only in the current UX.
 - The visible `Secret information` label is conceptually separate from the editable body.
 - `secretInfoLabel` exists now as scaffolding only; full label configurability is deferred.
@@ -112,13 +114,13 @@ Define raw output, editable output, derived display output, routed fragments, an
 ### Progress Notes
 
 - `1.4.21` established body-only editing for secret-info output while keeping the persisted current-output contract narrow.
-- `1.4.21` added lightweight leading-label normalization/sanitization at active live boundaries.
-- `1.4.21` deliberately did **not** broaden the persistent storage contract into a larger body/display schema redesign.
-- The current baseline still lacks a routed-state container, route receipts, and explicit editable-to-routed ownership tracking.
+- `1.5.0.5` added routed-state receipt and ownership scaffolding plus derived signature/status propagation.
+- `1.5.0.5` added receipt visibility in diagnostics as a lightweight inspection layer.
+- The current baseline still lacks full production route apply/clear/resync workflows across Memory, Author's Note, and Lorebook.
 
 ### Handoff Summary
 
-P1 has started, but only its baseline-hardening slice is done. The next real P1 work is to formalize routed-state ownership and receipts without collapsing the current four-layer architecture.
+P1 is active with a live `1.5.0.5` skeleton. The next real P1 work is consistency hardening and explicit route apply semantics without collapsing the current four-layer architecture.
 
 ---
 
@@ -172,13 +174,13 @@ Route the canonical editable output into Memory, Author's Note, and Lorebook saf
 
 ### Progress Notes
 
-- No production routing behavior exists yet.
+- Production route state scaffolding exists, but no full route apply/clear/resync behavior exists yet.
 - Current project direction is to route from canonical editable output, not raw output.
 - Future routing must preserve same-turn reroll protection and must not mutate unrelated user-authored context surfaces.
 
 ### Handoff Summary
 
-P3 has not started. When it begins, it should build outward from the hardened editable-output contract rather than from raw generation output.
+P3 has started in skeleton form. Next steps should build outward from the hardened editable-output contract rather than from raw generation output.
 
 ---
 
@@ -262,12 +264,12 @@ Expand diagnostics to explain generation state, edit state, route state, sync st
 ### Progress Notes
 
 - Current diagnostics are valid for the present sidebar-first generation tool.
-- Route-state diagnostics, sync receipts, and repair actions do not exist yet.
+- Route-state receipt summaries now exist, but full sync diagnostics and repair actions do not yet exist.
 - Any future diagnostics expansion must stay last in the sidebar unless the user explicitly changes that rule.
 
 ### Handoff Summary
 
-P6 remains future work and should follow the first real routing-state implementation.
+P6 is now in-progress at a baseline level and should next focus on actionable sync diagnostics and repair flows.
 
 ---
 
@@ -294,10 +296,10 @@ Copy this into a new chat when moving to the next package.
 
 ```md
 Project: Secret Info Panel
-Roadmap Reference: SecretInfoPanel_Roadmap_v1_1.md
-Progress Tracker: SecretInfoPanel_Progress_Tracker_v1_1.md
-Current Working Version: 1.4.21
-Completed Packages: none yet; baseline hardening through 1.4.21 established
+Roadmap Reference: docs/secret_info_panel_roadmap.md
+Progress Tracker: docs/secret_info_panel_progress_tracker.md
+Current Working Version: 1.5.0.5
+Completed Packages: baseline hardening + routing/receipt skeleton through 1.5.0.5
 Current Package To Build: P1 — Canonical Data Contract
 Locked Decisions: canonical editable output routes downstream; raw output remains diagnostic; body-only editing stays; secretInfoLabel is scaffolding only; tempStorage drafts are ephemeral only; manual edits remain authoritative until explicitly replaced by refresh
 Open Decisions Still Pending: lorebook routing model; manual edit sync model once routing exists; routing receipt shape; route apply behavior on refresh; default multi-character mode; Author's Note scope and length budget

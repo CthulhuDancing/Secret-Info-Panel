@@ -21,7 +21,7 @@ This document reflects the working baseline at the current project breakpoint.
 Working baseline at handoff:
 
 - **Generation behavior:** stabilized through the 1.3 series
-- **UI / storage / workflow baseline:** stabilized through the 1.4 series
+- **UI / storage / workflow baseline:** stabilized through the 1.4 series, with `1.5.0.5` routed-state scaffolding
 - **Current active concepts include:**
   - split prompt fields
   - separate current output storage
@@ -30,6 +30,7 @@ Working baseline at handoff:
   - same-turn reroll seed protection
   - limited recent history in the sidebar
   - diagnostics panel refactor
+  - routed-state ownership/receipt status scaffolding and receipt summaries
 
 ---
 
@@ -63,12 +64,7 @@ The script currently performs this cycle:
 6. store it as the current output
 7. log the result for history/audit purposes
 
-At this stage, the script **does not**:
-- inject into Memory
-- inject into Author's Note
-- sync lorebooks
-- maintain rigid character schemas
-- migrate old state from previous revisions
+At this stage, the script **does not yet** provide full production route apply/clear/resync workflows for Memory, Author's Note, and Lorebook, even though route-state ownership/receipt scaffolding now exists.
 
 ---
 
