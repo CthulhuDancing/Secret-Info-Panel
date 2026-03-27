@@ -4,6 +4,10 @@
 
 - promoted `secret_info_panel_v1_5_0_5.naiscript` to `live/secret_info_panel_live.naiscript`
 - updated `live/current_version.md` to reflect version `1.5.0.5`
+- aligned the docs set to the live `1.5.0.5` baseline
+- added `docs/README.md` as the docs index and source-of-truth guide
+- added `docs/secret_info_panel_minimap.md` as the quick navigation guide
+- rebased architecture, roadmap, and progress tracking docs around the implemented canonical-output and routed-state baseline
 
 ## 2026-03-26
 
