@@ -25,6 +25,7 @@ The live `1.5.0.5` baseline already includes:
 - tempStorage-backed edit-session handling
 - diagnostics that expose route adapter and receipt summaries
 - route-layer scaffolding for `memory`, `authorsNote`, and `lorebook`
+- intended clean-slate initialization behavior on script load
 
 The project is therefore past the older pre-contract baseline. The next major refactor should extend the current state contracts, not discard them.
 
@@ -41,6 +42,20 @@ The next packet should first strengthen:
 - injection readiness without early context contamination
 
 That groundwork should make later prompt engineering, lorebook work, and live injection easier to validate and safer to ship.
+
+## Initialization Interpretation
+
+The current script intentionally resets its own panel state to a fresh baseline on initialization.
+
+That should be treated as current intended behavior, not as a persistence bug.
+
+Accordingly:
+
+- the storage split still matters
+- state ownership still matters
+- authoritative state during active use still matters
+- but the project does **not** currently target preserving panel state unchanged through initialization
+- future work should preserve the intentional clean-slate initialize behavior unless project direction changes explicitly later
 
 ## Confirmed Target Outcomes
 
@@ -67,12 +82,13 @@ The intended end state includes:
 1. Keep the canonical-output contract intact.
 2. Keep same-turn reroll protection intact.
 3. Do not contaminate generated turns during validation.
-4. Keep story-scoped persistence reliable across machines.
-5. Treat raw model output as diagnostic, not authoritative truth.
-6. Make user edits authoritative only after explicit save.
-7. Keep UI roles clear and readable.
-8. Prefer narrow structural changes over broad rewrites.
-9. Keep the project practical, teachable, and repo-manageable.
+4. Keep authoritative working-state boundaries reliable during active use.
+5. Preserve the intended clean-slate initialization behavior unless the project direction explicitly changes.
+6. Treat raw model output as diagnostic, not authoritative truth.
+7. Make user edits authoritative only after explicit save.
+8. Keep UI roles clear and readable.
+9. Prefer narrow structural changes over broad rewrites.
+10. Keep the project practical, teachable, and repo-manageable.
 
 ## `1.5.0.x` Family Continuity Note
 
@@ -84,6 +100,7 @@ Carry these family-level interpretations forward:
 - treat compact routing diagnostics as a practical inspection surface, not as a large debug subsystem
 - preserve graceful interruption / failure cleanup as a cross-cutting hardening concern during near-term refactors
 - keep the next packet narrow and safety-oriented even while it prepares the next major revision
+- preserve intentional clean-slate initialize behavior while tightening active-use ownership rules
 
 ## Authoritative State Model To Target
 
@@ -213,29 +230,31 @@ Validation focus:
 - generate -> edit draft -> cancel -> reload
 - generate -> edit draft -> save -> reload
 - failure state where generation succeeded but commit did not happen
-- `storyStorage` inspection for ownership correctness
+- `storyStorage` inspection for ownership correctness during active use
 
 Success indicators:
 
-- unsaved edits never become durable truth
-- canonical body persists only on explicit save
+- unsaved edits never become durable truth during active use
+- canonical body persists only on explicit save during active use
 - raw fallback remains intact
 - derived display rebuilds correctly
+- intentional clean-slate initialization behavior remains unchanged
 
 ### Phase 2 - UI Split
 
 Validation focus:
 
-- multi-machine reload cycles
+- active-use reload cycles
 - dense prompt/output edits in the script panel
 - sidebar readability during and after the split
-- persistence of the new working/editing flow
+- persistence of the new working/editing flow during active use
 
 Success indicators:
 
 - sidebar remains compact and readable
 - script panel materially improves editing comfort
 - no long-lived split-state confusion between two competing editors
+- the new editing model does not weaken intended initialize behavior
 
 ### Phase 3 - Routing-Ready Planner
 
@@ -243,7 +262,7 @@ Validation focus:
 
 - canonical body edits produce deterministic target previews
 - target dirty/current/planned state transitions remain coherent
-- route-plan state stays analyzable in `storyStorage`
+- route-plan state stays analyzable in `storyStorage` during active use
 - reroll protection still behaves correctly
 
 Success indicators:
@@ -285,7 +304,7 @@ Success indicators:
 
 ### State Risk
 
-The largest immediate risk is allowing temp draft state or unsaved UI state to become silent durable truth.
+The largest immediate risk is allowing temp draft state or unsaved UI state to become silent durable truth during active use.
 
 ### Routing Risk
 
@@ -301,6 +320,13 @@ The useful parts of temp draft handling should remain, but commit semantics need
 ### Reroll / Contamination Risk
 
 This remains non-negotiable. Same-turn rerolls must stay anchored to stable turn-backed seed state, and future routing must derive from committed canonical body rather than raw output.
+
+### Initialization Risk
+
+Future refactors should not accidentally erase the intended difference between:
+
+- active-use authoritative state handling
+- deliberate clean-slate initialization behavior
 
 ### Performance Risk
 
@@ -378,8 +404,9 @@ The next major revision should be considered complete when:
 - manual refresh remains dependable
 - auto-refresh remains opt-in
 - same-turn reroll protection still behaves correctly
-- `storyStorage` remains sufficient for GPT-aided state diagnosis
+- `storyStorage` remains sufficient for GPT-aided state diagnosis during active use
 - the project remains lightweight and readable enough to hand off revision-by-revision
+- intended clean-slate initialization behavior remains intact unless deliberately changed later
 
 ## Final Direction
 
@@ -392,3 +419,4 @@ The stronger version of Secret Info Panel should remain:
 - safe to validate and evolve revision-by-revision
 - increasingly routing-capable without becoming fragile
 - practical for real users and still understandable as a learning project
+- intentionally clean-slate on initialization unless the project direction later changes by design
