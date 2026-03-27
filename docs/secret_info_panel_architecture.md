@@ -2,246 +2,139 @@
 
 ## Purpose
 
-This script generates a **private secret-information continuity block** for an ongoing NovelAI story. The current implementation is designed for **sidebar-first testing**, not for Memory or Author's Note injection yet.
+Secret Info Panel is a NovelAI `.naiscript` project that generates and manages a private secret-information continuity block during story sessions.
 
-The system is intended to:
+The current live baseline is `1.5.0.5`. The project is still sidebar-first, but it is no longer only a pre-routing prototype. The live script now includes canonical output handling, preserved raw diagnostic layers, routed-state scaffolding, and tempStorage-backed edit-session handling.
 
-- infer **hidden or semi-hidden character interiority**
-- remain **soft, uncertain, and low-drama**
-- carry forward a **stable prior-turn seed**
-- allow **same-turn rerolls** without recursively feeding on the newest reroll
-- preserve a lightweight **history log** for auditing behavior across turns
+## Current Baseline
 
-This document reflects the working baseline at the current project breakpoint.
+- promoted live revision: `1.5.0.5`
+- live script: `live/secret_info_panel_live.naiscript`
+- promoted source artifact: `archive/code/secret_info_panel_v1_5_0_5.naiscript`
 
----
-
-## Current Version Baseline
-
-Working baseline at handoff:
-
-- **Generation behavior:** stabilized through the 1.3 series
-- **UI / storage / workflow baseline:** stabilized through the 1.4 series
-- **Current active concepts include:**
-  - split prompt fields
-  - separate current output storage
-  - separate generated/history storage
-  - separate prompt preview storage
-  - same-turn reroll seed protection
-  - limited recent history in the sidebar
-  - diagnostics panel refactor
-
----
+The implementation now separates prompt fields, prompt preview, current output, generated runtime state, and routed state.
 
 ## High-Level Architecture
 
-The script is organized around four conceptual layers:
+The current script is best understood as six layers:
 
-1. **Prompt Inputs**
-   - editable prompt text used to define generation behavior
+1. **Prompt fields** - persistent user-editable prompt text and config-like values
+2. **Prompt preview** - rebuilt canonical prompt artifact used for generation
+3. **Current output contract** - canonical editable body plus derived display text
+4. **Generated runtime state** - timestamps, raw response capture, prompt dynamic block, status, history, and turn-seed counters
+5. **Routed-state scaffolding** - route target metadata, ownership placeholders, signatures, and receipt placeholder state for future routing
+6. **Ephemeral edit-session state** - tempStorage-backed active field and draft values for the current session only
 
-2. **Derived Prompt Artifact**
-   - a rebuilt full prompt preview used as the canonical prompt source for generation
+## Primary Functional Cycle
 
-3. **Current Output**
-   - the most recent secret-information block currently displayed in the sidebar
+The current live cycle is:
 
-4. **Generated Runtime State**
-   - timestamps, model info, latest raw response, dynamic prompt block, history log, turn/seed counters, and other runtime diagnostics
+1. read current story context from NovelAI
+2. rebuild the prompt preview from current inputs
+3. call `generateWithStory`
+4. receive one compact `Secret information:` paragraph
+5. normalize the result into canonical body and derived display text
+6. display it in the sidebar
+7. save runtime diagnostics and append a bounded history entry
 
----
+The script still does **not** yet perform finished production routing into Memory, Author's Note, or Lorebook. It now carries the route-layer contract needed for that later work.
 
-## Primary Functional Goal
+## Prompt Model
 
-The script currently performs this cycle:
+The prompt is built from three inputs:
 
-1. read the current story context from NovelAI
-2. rebuild the full generation prompt
-3. send the rebuilt prompt to GLM-4.6
-4. receive one compact **Secret information:** paragraph
-5. display it in the sidebar
-6. store it as the current output
-7. log the result for history/audit purposes
+- `scriptSystemPrompt`
+- dynamic prompt block rebuilt from runtime state
+- `scriptPrompt`
 
-At this stage, the script **does not**:
-- inject into Memory
-- inject into Author's Note
-- sync lorebooks
-- maintain rigid character schemas
-- migrate old state from previous revisions
-
----
-
-## Generation Philosophy
-
-The generation prompt was deliberately shaped to avoid earlier failure modes:
-
-- avoid rigid structured extraction
-- avoid overt planning/future action focus
-- avoid first-person interior voice
-- avoid highly certain claims about character psychology
-- avoid recursive dramatic escalation across same-turn rerolls
-
-The current output style is:
-
-- **one compact paragraph**
-- **close third person**
-- **soft, uncertain, interior**
-- **plain private thought**
-- **not a public summary**
-- **not an omniscient verdict**
-
----
-
-## Prompt Construction Model
-
-The script now treats prompt construction as a layered system.
-
-### 1. Script System Prompt
-
-This is the stable behavior/instruction layer.  
-It defines:
-
-- tone
-- uncertainty
-- third-person requirement
-- anti-escalation behavior
-- low-drama internal-thought framing
-- formatting rules for the returned block
-
-### 2. Dynamic Prompt Block
-
-This is rebuilt automatically from current runtime data.
-
-It currently includes:
-
-- story title
-- previous secret-info block seed
-
-This is **not user-authored prompt text**. It is generated by the script from state.
-
-### 3. Script Prompt
-
-This is the task instruction layer.  
-It tells the model what to do with the live story context plus the dynamic block.
-
-### 4. Prompt Preview
-
-The final prompt artifact is rebuilt in this order:
+The stored preview is rebuilt in this shape:
 
 ```text
-SYSTEM: [scriptSystemPrompt]
+SYSTEM:
+[scriptSystemPrompt]
 
-USER: [lastPromptDynamic]
+USER:
+[lastPromptDynamic]
 
 [scriptPrompt]
 ```
 
-This rebuilt preview is the **main prompt source** used for generation.
-
-### Important Rule
-
-The backend fields are treated as ingredients, but the **rebuilt prompt preview** is the actual prompt artifact used for the GLM call.
-
----
-
-## Story Context / Model Call Strategy
-
-The script uses the live NovelAI story context path so generation sees:
-
-- current story text
-- active story settings
-- active inserted lorebook content
-
-The script does **not** construct raw story context manually.
-
-The custom prompt layer is applied on top of the live story context generation flow.
-
----
+That stored prompt preview is the generation source of truth inside the script.
 
 ## Same-Turn Reroll Protection
 
-This is one of the most important architectural changes.
+Same-turn reroll protection remains a core preserved behavior.
 
-### Problem Solved
+The script distinguishes between:
 
-Earlier behavior allowed same-turn refreshes to feed on the most recent freshly generated secret-info output. That caused recursive escalation and drift.
+- current displayed output
+- prompt seed output used for the current story turn
 
-### Current Behavior
-
-The script now distinguishes between:
-
-- **current displayed output**
-- **turn seed output used as the prior block**
-
-### Seed Logic
-
-The system tracks:
+The generated state tracks:
 
 - `storyTurnCounter`
 - `promptSeedTurnCounter`
 - `promptSeedSecretInfo`
 
-### Effect
+Effect:
 
-- If **no new turn has passed**, repeated refreshes reuse the same seed block.
-- If **a new turn has passed**, the next refresh advances from the last stable turn-backed block.
-
-This allows:
-- same-turn rerolls
-- lower escalation risk
-- easier testing without manual editing
-- more stable evolution across turns
-
----
+- rerolls during the same story turn reuse the same stable seed
+- a completed new story turn allows the next refresh to advance from the carried-forward state
 
 ## Storage Layout
 
-The script uses **separate storyStorage objects** instead of one large mixed state object.
-
-
-### Persistent Storage Keys
-
-The current story-scoped storage keys are:
+### storyStorage keys
 
 - `secret-info-panel-prompt-fields-v1`
 - `secret-info-panel-current-output-v1`
 - `secret-info-panel-generated-state-v1`
 - `secret-info-panel-prompt-preview-v1`
+- `secret-info-panel-routed-state-v1`
 
-These keys are part of the real architecture and should be treated as stable references for debugging, exports, and future refactors.
+### tempStorage keys
 
-### 1. Prompt Fields Storage
+- `secret-info-panel-runtime-log-v1`
+- `secret-info-panel-edit-active-field-v1`
+- `secret-info-panel-edit-secret-info-draft-v1`
+- `secret-info-panel-edit-system-prompt-draft-v1`
+- `secret-info-panel-edit-script-prompt-draft-v1`
 
-**Key:** `secret-info-panel-prompt-fields-v1`
+Interpretation rule:
 
-Stores user-editable or config-like prompt field values, including:
+- storyStorage holds durable per-story project state
+- tempStorage holds ephemeral session convenience state only
+
+## Persistent Data Containers
+
+### Prompt fields
+
+Stores prompt text and config-like values such as:
 
 - `scriptSystemPrompt`
 - `scriptPrompt`
-- internal config values such as:
-  - `maxHistoryEntries`
-  - `autoRefreshEachTurn`
-  - `useAuthorsNoteForSecretInfo`
-  - `lorebookOnlyCharacterDetection`
+- `maxHistoryEntries`
+- `autoRefreshEachTurn`
+- `useAuthorsNoteForSecretInfo`
+- `lorebookOnlyCharacterDetection`
+- `secretInfoLabel`
 
-These are currently story-scoped backend values.
+### Current output
 
-### 2. Current Output Storage
+Stores the live output contract:
 
-**Key:** `secret-info-panel-current-output-v1`
+- `secretInfo`
+- `canonicalBody`
+- `derivedDisplayText`
 
-Stores only:
+Interpretation rule:
 
-- current `secretInfo`
+- `canonicalBody` is the editable continuity body
+- `derivedDisplayText` is the rebuilt visible display layer
+- `secretInfo` remains the currently stored visible representation
 
-This separation exists so the live editable/displayed output is no longer mixed together with history and runtime state.
+### Generated state
 
-### 3. Generated State Storage
-
-**Key:** `secret-info-panel-generated-state-v1`
-
-Stores runtime and audit data, including:
+Stores runtime and audit data such as:
 
 - `lastUpdatedAt`
 - `lastModel`
@@ -250,252 +143,133 @@ Stores runtime and audit data, including:
 - `lastStoryTitle`
 - `lastPromptDynamic`
 - `lastRawResponse`
-- `logEntries`
-- `nextLogSequence`
+- `lastRawResponseBody`
+- `canonicalContractVersion`
+- `routedFragmentStatus`
+- `routingReceiptStatus`
+- history state
 - turn/seed counters
+- auto-refresh markers
 
-This is the non-editable generated/runtime state container.
+### Prompt preview
 
-### 4. Prompt Preview Storage
+Stores `promptPreview`.
 
-**Key:** `secret-info-panel-prompt-preview-v1`
+### Routed state
 
-Stores:
+Stores route-layer scaffolding such as:
 
-- `promptPreview`
+- `contractVersion`
+- `adapterContractVersion`
+- `sourceCanonicalSignature`
+- `sourceCanonicalUpdatedAt`
+- `routedFragmentStatus`
+- `routingReceiptStatus`
+- `lastReceiptSweepAt`
+- target-level state for `memory`, `authorsNote`, and `lorebook`
 
-This makes the rebuilt full prompt directly inspectable in exported storyStorage.
+Each target already carries fields for adapter identity, ownership markers, desired signatures, apply timestamps, applied signatures, receipt status, and receipt errors.
 
----
+## Canonical Output Contract
 
-## History Log Behavior
+The current baseline should be read as distinct layers:
 
-The script keeps a bounded historical log of secret-info outputs.
+1. raw model response
+2. raw response body
+3. canonical body
+4. derived display text
+5. derived route fragments
 
-### Intent
+Key downstream rule:
 
-The history log exists to:
+**route from canonical body, not from raw diagnostic output**
 
-- audit evolution across turns
-- compare changed vs unchanged states
-- inspect rerolls
-- validate turn-seed behavior
+## Edit-Session Model
 
-### Current Sidebar Behavior
+The current live baseline includes explicit edit-session handling.
 
-The sidebar only exposes:
+Current editable surfaces:
 
-- the **4 most recent history logs**
+- secret-info output body
+- script system prompt
+- script prompt
 
-Older logs remain in storage but are not shown in the side panel list.
+Current rules:
 
-### Changed / Unchanged Header Logic
-
-The history header was intentionally changed so that:
-
-- first refresh for a new story turn = **changed**
-- additional same-turn rerolls = **unchanged**
-
-This is based on turn progression, not merely whether the generated text differs.
-
----
-
-## Script Activity Logging
-
-The script also maintains normal script-side action logging separate from the secret-info history log.
-
-Current intent:
-
-- record script actions
-- aid debugging
-- avoid polluting the sidebar with duplicate script-log UI
-
-Script activity log retention is bounded separately from secret-info history retention.
-
----
+- one dense field is edited at a time
+- drafts live in tempStorage during the session
+- saving commits changes back into storyStorage
+- cancelling clears the temp draft state
+- the visible `Secret information:` label is rebuilt automatically and is not part of the canonical body
 
 ## Sidebar UI Structure
 
-The sidebar is currently organized around the following sections:
+The sidebar remains the active operating surface.
 
-1. **Action controls**
-   - refresh
-   - clear operations
-   - auto-refresh toggle
+Major sections currently include:
 
-2. **Current Secret Information**
-   - the most recent generated secret-info block
+1. action controls
+2. current secret-information output
+3. recent history log
+4. script system prompt
+5. script prompt
+6. diagnostics
 
-3. **Recent History Log**
-   - most recent 4 log entries
-   - collapsible entry view
-   - raw history viewer support
-
-4. **Script System Prompt**
-   - current system prompt text
-
-5. **Script Prompt**
-   - current task prompt text
-
-6. **Prompt Preview / Prompt diagnostics**
-   - rebuilt prompt artifact and related debug visibility
-
-7. **Diagnostics**
-   - intended to remain the last section in the sidebar
-
-
-### Notable UI Storage Keys
-
-The sidebar intentionally uses only a small bounded set of persistent UI-state keys for recent history collapse state:
-
-- `recent-history-slot-0`
-- `recent-history-slot-1`
-- `recent-history-slot-2`
-- `recent-history-slot-3`
-
-These are the only UI `storageKey` values worth treating as architectural, because they preserve collapse state for the 4 most recent visible history entries.
-
-Most other UI element ids are implementation detail and should not be treated as stable project-level contracts unless a future revision deliberately promotes them to that role.
-
-### Diagnostics Positioning Rule
-
-Diagnostics should remain **last** in the sidebar panel.
-
-A code comment anchor was planned/used so future edits keep diagnostics at the bottom of the panel.
-
----
+Diagnostics remains the final section in the sidebar.
 
 ## Diagnostics Role
 
-Diagnostics was refactored away from being a raw dump box.
+Diagnostics is a compact health and inspection surface rather than a raw dump box.
 
-It now functions as a compact health/status layer.
+Current diagnostics cover:
 
-Intended summary categories include:
-
-- run state
-- data state
-- sync status
+- run state, updated time, and model
+- output, canonical body, display text, and raw response lengths
+- prompt and dynamic prompt lengths
+- history counts and latest-entry checks
+- auto-refresh state
+- canonical contract and adapter contract versions
+- route adapter summary
+- route receipt summary
 - warnings
-- collapsible detail sections
+- expandable detail areas for last error, raw response, dynamic prompt block, and validation notes
 
-Key diagnostic values include:
+This means the route scaffolding is already inspectable even though full routing is not yet implemented.
 
-- last status
-- last updated time
-- model
-- story title
-- output length
-- prompt preview length
-- dynamic prompt length
-- history count
-- sync/seed checks
-- last error
-- last raw response
-- last prompt dynamic block
+## Hook Lifecycle
 
-This section is important for validating prompt seed behavior and prompt reconstruction.
+The live script uses these NovelAI hook surfaces:
 
----
+- `onResponse`
+- `onGenerationRequested`
+- `onGenerationEnd`
+- `onScriptsLoaded`
 
-## Auto Refresh Behavior
+They are used to track completed story generations, coordinate auto-refresh behavior, distinguish user story turns from script work, and initialize a fresh session.
 
-A toggle exists for:
+## Current Non-Features
 
-- `autoRefreshEachTurn`
+The current implementation still does **not** provide a finished production system for:
 
-When enabled, the script can run after normal story-turn generation completes.
+- applying routed output into Memory
+- applying routed output into Author's Note
+- applying routed output into Lorebook entries
+- dense bottom-bar editor migration
+- rigid JSON extraction
+- broad migration compatibility across old revisions
 
-Manual refresh remains available regardless.
+## Implemented Baseline Summary
 
-This feature is intentionally simple at the current breakpoint and may be expanded later.
+At `1.5.0.5`, the script is best understood as:
 
----
+- a sidebar-first private continuity generator
+- using split prompt fields and stored prompt preview
+- preserving raw diagnostic response layers
+- maintaining canonical body vs derived display separation
+- tracking runtime and history state separately
+- carrying routed-state scaffolding for future target adapters
+- protecting same-turn rerolls from recursive contamination
+- using tempStorage-backed edit sessions for dense field edits
+- keeping diagnostics last in the sidebar
 
-## Deliberate Non-Features
-
-The current design intentionally does **not** do the following yet:
-
-- Memory injection
-- Author's Note injection
-- lorebook synchronization
-- lorebook mutation
-- rigid schema output
-- JSON extraction
-- migration of old script revisions
-- complex cross-version compatibility code
-
-These are out of scope for the current breakpoint.
-
----
-
-## Design Principles Preserved So Far
-
-Several principles were explicitly chosen and repeatedly reinforced:
-
-### 1. Soft, coarse output over rigid structure
-The script deliberately avoids dense schema enforcement.
-
-### 2. Prompt engineering over structural overfitting
-Behavior has been improved mainly through prompt shaping, not increasingly rigid output formats.
-
-### 3. Story-scoped state over unnecessary configuration complexity
-Persistent values live in story storage rather than being split unnecessarily into multiple control systems.
-
-### 4. Stable rerolls over recursive contamination
-Same-turn refreshes should not recursively consume their latest output.
-
-### 5. Clean separation of concerns
-Prompt fields, current output, generated state, and rebuilt prompt preview live separately.
-
-### 6. UI should remain readable
-Bulky debug information is pushed down or collapsed instead of dominating the main panel.
-
----
-
-## Known Stable Behaviors at Handoff
-
-At this breakpoint, the following behaviors have been tested and are expected:
-
-- manual refresh works
-- auto refresh toggle works
-- prompt preview is rebuilt and stored separately
-- split prompt fields persist correctly
-- current output is stored separately from generated history state
-- same-turn rerolls stay anchored to the prior stable turn seed
-- history headers correctly distinguish changed vs unchanged by turn progression
-- sidebar history only shows the 4 most recent entries
-- diagnostics reflect current seed/output relationships
-
----
-
-## Recommended Next Major Work Phase
-
-The next feature phase is **lorebook-related**, which is a major change boundary.
-
-That next phase may include decisions about:
-
-- how lorebook presence affects character selection
-- whether to restrict hidden-thought inference to lorebook-backed characters
-- whether secret-info output should eventually feed Memory or Author's Note
-- whether lorebook-derived identity traits should be treated differently from story-evidenced state
-- how validation should behave when a user edits prompt or output manually
-
-Because that is a major change boundary, this document is intended as a clean handoff snapshot before that work begins.
-
----
-
-## Handoff Summary
-
-At handoff, the script is best understood as:
-
-- a **sidebar-first secret interiority generator**
-- using **split prompt fields**
-- rebuilding a **canonical prompt preview**
-- storing a **separate current output**
-- keeping **runtime/history state** separate
-- protecting against **same-turn recursive contamination**
-- logging evolution across turns
-- avoiding memory injection and lorebook mutation for now
-
-This is a good architectural pause point before beginning the next lorebook-centered phase.
+That is the current implemented architecture baseline that later docs should build from.

@@ -5,7 +5,17 @@ Secret Info Panel is a NovelAI `.naiscript` project for generating and managing 
 ## Repository Layout
 
 - `live/` contains the current authoritative script and version note
-- `docs/` contains the current architecture, roadmap, progress tracker, minimap, and changelog
+- `docs/` contains the current docs index, architecture, roadmap, progress tracker, minimap, and changelog
 - `data/` contains samples, test exports, and logs
 - `archive/` contains historical code, docs, data, and forks
 - `scratch/` is reserved for temporary work files only
+
+## Documentation Reading Order
+
+When documents disagree, read in this order:
+
+1. `live/secret_info_panel_live.naiscript`
+2. `live/current_version.md`
+3. `docs/changelog.md`
+4. `docs/README.md`
+5. the rest of the current docs in `docs/`
