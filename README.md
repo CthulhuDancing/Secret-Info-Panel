@@ -8,7 +8,7 @@ Secret Info Panel is a NovelAI `.naiscript` project for generating and managing 
 - `docs/` contains the current docs index, architecture, roadmap, progress tracker, minimap, and changelog
 - `data/` contains samples, test exports, and logs
 - `archive/` contains historical code, docs, data, and forks
-- `scratch/` is reserved for temporary work files only
+- `scratch/` is reserved for temporary work files and transient handoff/context files
 
 ## Documentation Reading Order
 

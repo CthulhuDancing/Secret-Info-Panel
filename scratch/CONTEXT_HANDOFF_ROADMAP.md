@@ -1,6 +1,6 @@
 # Secret Info Panel — Context Handoff + Roadmap (Sanitized Memory)
 
-> Purpose: This file is the compact handoff context for another GPT session that cannot easily index the repository. It captures goals, current state, constraints, and a path map to key files.
+> Purpose: This file is a compact handoff context for another GPT session that cannot easily index the repository. It captures goals, current state, constraints, and a path map to key files.
 
 ## 1) What the user is trying to accomplish
 
@@ -23,7 +23,7 @@ Important constraint:
 - Archive snapshots: `archive/code/`
 
 ### Recent implemented changes (high level)
-- Promoted live script to `1.5.0.5` metadata.
+- Promoted live script to `1.5.0.6` metadata.
 - Added routed receipt/ownership status fields and derivation helpers.
 - Added diagnostics summary for routing receipts.
 - Added debounced draft persistence for edit sessions (to reduce temp storage write noise).
@@ -72,7 +72,9 @@ Avoid:
 - `README.md` — repository purpose and folder conventions
 - `WORKFLOW.md` — workflow notes
 - `PROJECT_MAP.md` — project map
-- `CONTEXT_HANDOFF_ROADMAP.md` — this handoff memory file
+
+### Scratch handoff
+- `scratch/CONTEXT_HANDOFF_ROADMAP.md` — this handoff memory file
 
 ### Live authoritative artifacts
 - `live/secret_info_panel_live.naiscript` — primary userscript
@@ -113,7 +115,7 @@ Copy/paste this prompt into the next chat:
 You are reviewing a NovelAI Storyteller userscript repository.
 
 Start by reading these files in order:
-1) CONTEXT_HANDOFF_ROADMAP.md
+1) scratch/CONTEXT_HANDOFF_ROADMAP.md
 2) README.md
 3) live/secret_info_panel_live.naiscript
 4) docs/secret_info_panel_roadmap.md

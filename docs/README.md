@@ -24,12 +24,12 @@ The live script is the implementation truth. The version note is the promoted-re
 ## Current baseline
 
 - promoted live script: `live/secret_info_panel_live.naiscript`
-- current working version: `1.5.0.5`
-- date aligned: `2026-03-27`
+- current working version: `1.5.0.6`
+- date aligned: `2026-03-28`
 
 ## Interpretation rule
 
-The project is no longer in the older `1.4.21` pre-contract state. The live `1.5.0.5` script already includes:
+The project is no longer in the older `1.4.21` pre-contract state. The live `1.5.0.6` script already includes:
 
 - canonical body vs derived display separation
 - preserved raw diagnostic response layers
