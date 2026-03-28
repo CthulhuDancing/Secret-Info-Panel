@@ -4,3 +4,6 @@ AGENT.md
 
 # Codex skill bundle
 Skills/
+
+# Runtime data should stay local-only
+/data/
