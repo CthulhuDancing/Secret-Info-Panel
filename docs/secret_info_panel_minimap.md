@@ -48,9 +48,9 @@ This file is the fast navigation map for the Secret Info Panel repository.
 
 ## Current Working Baseline
 
-- Current promoted version: `1.5.0.5`
+- Current promoted version: `1.5.0.7c`
 - Current promoted script path: `live/secret_info_panel_live.naiscript`
-- Current documentation alignment date: `2026-03-27`
+- Current documentation alignment date: `2026-03-28`
 
 ## Important Interpretation Notes
 
