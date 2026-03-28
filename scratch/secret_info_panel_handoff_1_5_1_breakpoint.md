@@ -1,188 +1,153 @@
 # Full Breakpoint Handoff
 
 ## Scope
-This handoff captures the end-of-family breakpoint after the `1.5.0.x` groundwork packet, with the project now positioned to begin `1.5.1` work. It covers the stable baseline contracts inherited from the live script and aligned docs on `main`, plus the net-new intent and implemented direction from this chat across `1.5.0.6` through `1.5.0.7c`.
+This handoff closes out the `1.5.0.x` groundwork family and reframes the start of `1.5.1` around **UI stabilization and future-feature carveout** rather than another core state-contract refactor.
+
+The `1.5.0.x` family should now be treated as the completed groundwork packet that established and preserved the active-use ownership model, dense over-input workspace, preview-only planning layer, and clean separation between canonical output, derived display, raw diagnostics, and draft state.
+
+`1.5.1` should begin from that stable base and focus first on **fixing and simplifying the UI**, especially the relationship between the sidebar and the over-input workspace, while also making sure the UI layout deliberately reserves room for future features such as source selection, lorebook-related planning, and later routing growth.
 
 ## Source Basis and Confidence
-- Authoritative basis: `live/current_version.md`; `docs/secret_info_panel_architecture.md`; `docs/secret_info_panel_roadmap.md`; `docs/secret_info_panel_progress_tracker.md`; the fetched `main` live script baseline in `live/secret_info_panel_live.naiscript`
-- Supporting basis: the chat-established revision sequence and requested scope boundaries for `1.5.0.6` and the final `1.5.0.7x` UI/planner refinements
-- Inferred context: the exact `1.5.0.7c` file contents are treated as current working output from this chat, but are not yet reflected in the fetched `main` docs or live script on GitHub
-- Confidence: medium-high
+- Authoritative basis: current project docs on `main` and the completed `1.5.0.x` family work as established in this chat
+- Supporting basis: architecture, roadmap, progress tracker, and the finalized `1.5.0.x` UI/workflow decisions reached in this chat
+- Inferred context: exact `1.5.1` sequencing and UI grouping emphasis, synthesized from the current family endpoint and user direction in this chat
+- Confidence: high
 
 ## Current Baseline
-The authoritative documented repo baseline on `main` is still the `1.5.0.6` checkpoint in `live/current_version.md`, while the project-working continuation from this chat should be treated as the end-of-family `1.5.0.7c` snapshot prepared for the next phase. The stable interpretation is:
+Current working family endpoint: **`1.5.0.7c`**
 
-- `1.5.0.5` remained the documented live architectural baseline on `main`
-- `1.5.0.6` completed Workstream A: commit semantics and authority cleanup
-- `1.5.0.7x` completed the final narrow groundwork pass for the family by moving dense work into the over-input script-panel workspace, reducing sidebar duplication, and keeping routing preview-only
-- the intended handoff start point for `1.5.1` is the `1.5.0.7c` working snapshot, not older branch assumptions
+Included at that endpoint:
+- preserved canonical-output ownership cleanup from `1.5.0.6`
+- over-input dense working surface with tabs
+- sidebar reduced toward compact monitoring and control
+- history moved out of the sidebar into the over-input workspace
+- route planner kept preview-only
+- `Planning` tab includes route toggles and a first source-selection surface
+- `Prompting` combines prompt editing and preview concerns
 
 ## Stable Contracts and Rules
-The following rules are now the important preserved core of the `1.5.0.x` family and should carry forward into `1.5.1` unless explicitly changed:
+These are considered preserved family-level contracts and should remain intact in `1.5.1` unless explicitly changed on purpose:
 
-1. **Canonical output ownership remains explicit**
-   - committed canonical body is the authoritative downstream source
-   - derived display text is rebuilt from canonical body
-   - visible `Secret information:` label is display-only and not editable truth
-
-2. **Raw output remains diagnostic**
-   - raw model response and raw response body are preserved as diagnostic layers
-   - future routing must not derive from raw output
-
-3. **Draft state remains draft-only**
-   - edit-session drafts live in temp state
-   - drafts become authoritative only on explicit save
-   - save/cancel semantics remain explicit
-
-4. **Same-turn reroll protection remains non-negotiable**
-   - `storyTurnCounter`, `promptSeedTurnCounter`, and `promptSeedSecretInfo` continue to anchor rerolls to stable turn-backed seed state
-   - same-turn refreshes must not recursively contaminate themselves
-
-5. **Clean-slate initialization remains intended baseline behavior**
-   - script load / runtime reinitialization still resets the panel’s own saved state and rebuilds a fresh baseline
-   - do not reinterpret this as a persistence bug unless project direction changes explicitly later
-
-6. **Routing remains preview-only**
-   - routed-state scaffolding is real baseline work and should be extended, not discarded
-   - planner state may represent targets, desired signatures, and preferences
-   - no live Memory / Author’s Note / Lorebook apply engine has been started yet
-
-7. **UI roles are now intentionally split**
-   - sidebar = compact control / monitoring / diagnostics surface
-   - over-input script panel = dense working / editing / planning / history surface
-
-8. **Narrow structural changes remain preferred**
-   - avoid speculative abstractions, broad compatibility layers, or large rewrites
-   - preserve the readable project shape and teachable revision-to-revision continuity
+- `canonicalBody` is the authoritative downstream source.
+- `derivedDisplayText` is rebuilt from committed canonical body.
+- `secretInfo` remains the visible stored display representation.
+- raw model output remains diagnostic only.
+- unsaved drafts remain draft-only until explicit save.
+- secret-info editing remains body-only at the canonical edit layer.
+- same-turn reroll protection remains intact.
+- future routing must derive from committed canonical body, not raw output.
+- routing/planning remains preview-only until live apply is intentionally started later.
+- clean-slate initialization on script load remains intended current behavior.
+- sidebar remains the compact monitoring/control plane.
+- over-input workspace remains the dense working/editing plane.
+- narrow structural changes remain preferred over broad rewrites.
 
 ## Authoritative References
-Read these first before starting `1.5.1`:
+Treat these as the primary references for continuing into `1.5.1`:
 
-1. `live/current_version.md`
-2. `docs/secret_info_panel_architecture.md`
-3. `docs/secret_info_panel_roadmap.md`
-4. `docs/secret_info_panel_progress_tracker.md`
-5. the `1.5.0.7c` working snapshot from this chat
+1. `live/secret_info_panel_live.naiscript`
+2. `live/current_version.md`
+3. `docs/secret_info_panel_architecture.md`
+4. `docs/secret_info_panel_roadmap.md`
+5. `docs/secret_info_panel_progress_tracker.md`
+6. this handoff
 
-Interpretation order for present continuation:
-- use repo and docs on `main` for stable contracts and documented sequencing
-- use the `1.5.0.7c` snapshot from this chat as the practical working code basis for the next revision
-- do not fall back to older pre-contract assumptions
+If the next chat needs to reason about what is already protected versus what is now open for change, use the architecture + roadmap pairing first, then confirm present details from the live script.
 
 ## Current State
-At the end of this chat, the project has been intentionally steered to a family-complete state for `1.5.0.x`.
+The project is now past the authority-cleanup stage and the first over-input workspace migration stage.
 
-### What `1.5.0.6` accomplished
-`1.5.0.6` was the Workstream A cleanup pass.
+The important current interpretation is:
+- the **state model is no longer the primary unfinished area**
+- the **UI surface model is now the main unfinished area**
 
-It tightened:
-- explicit canonical commit behavior
-- explicit separation of draft state, canonical body, derived display text, and raw diagnostics
-- central commit pathways for save/generate/clear behavior
-- reconstruction from committed canonical body instead of trusting stored display text as an authority layer
+The current workspace arrangement is usable, but `1.5.1` should assume that the UI still needs refinement in order to become the real long-term operating surface.
 
-This was validated in-chat as preserving:
-- canonical vs raw separation
-- draft-only edit semantics until save
-- same-turn reroll anchoring
-- clean-slate initialization behavior
+The main relevant outcomes from `1.5.0.x` are:
+- active-use authority cleanup landed
+- canonical vs display vs raw vs draft separation is established
+- same-turn reroll protection remained intact through the family
+- route planning exists but remains preview-only
+- dense editing now lives over the input instead of depending on the sidebar
+- tab organization has started to become workflow-based
+- a first `Sources` concern is now acknowledged in the UI rather than being left implicit
 
-### What the `1.5.0.7x` pass accomplished
-The final `1.5.0.7` family refinements focused on UI roles and preview-only planning without undoing the authority cleanup.
+That means `1.5.1` should not reopen foundational ownership work unless a true regression is found.
 
-The family endpoint established in `1.5.0.7c` is:
-- over-input workspace uses tabs
-- tabs were condensed into:
-  - `Secret Info`
-  - `Prompting`
-  - `Planning`
-  - `History`
-- `Prompts` + `Preview` were merged into `Prompting`
-- `Routes` was renamed to `Planning`
-- a `Sources` section was added under `Planning`
-- source behavior currently uses the existing `lorebookOnlyCharacterDetection` setting:
-  - enabled = lorebook-only
-  - disabled = prefer lorebooks with story-context fallback
-- duplicate current secret-info display was removed from the sidebar
-- per-target text-body previews were removed from the route checkboxes
-- history logs were moved out of the sidebar into the dedicated over-input `History` panel so the full stored history can be reviewed there
-
-### What remained intentionally unchanged during the UI pass
-The UI/workspace changes were kept narrow and were not intended to alter:
-- canonical ownership rules
-- raw diagnostic handling
-- reroll protection
-- clean-slate initialize behavior
-- preview-only routing boundary
+Instead, `1.5.1` should treat the UI as the next major design surface to stabilize and future-proof.
 
 ## Deliberate Non-Features or Deferred Areas
-The following remain intentionally deferred at the family breakpoint and should not be treated as already-landed work:
+These remain intentionally deferred at the `1.5.1` starting point:
 
 - live apply / clear / resync into Memory
-- live apply / clear / resync into Author’s Note
+- live apply / clear / resync into Author's Note
 - live apply / clear / resync into Lorebook
+- receipt validation against live target content
 - ownership-marker splicing into live targets
-- receipt validation against real target content
-- full lorebook / source discovery system
+- full lorebook discovery system
 - multi-character output expansion
-- broad config/schema framework
-- broad migration / compatibility layers for older archived revisions
-- prompt-engineering expansion tied to live routing
+- heavy compatibility scaffolding for old archived revisions
+- broad routing engine abstractions
+- rigid extractor / schema-style redesign
+
+Important interpretation:
+`1.5.1` may **prepare** the UI for future lorebook-related work, but it should **not** skip ahead into finished lorebook routing implementation.
 
 ## Open Decisions and Known Risks
 ### Open decisions
-1. **What exactly opens `1.5.1`**
-   The project is now at the boundary where the next revision can move beyond groundwork-only family cleanup. The main pending decision is which narrowly-scoped next phase becomes the opening objective for `1.5.1`.
-
-2. **Source model evolution**
-   A basic `Sources` surface now exists conceptually inside `Planning`, but the deeper source model is still unresolved:
-   - explicit lorebook-only
-   - lorebook-preferred with story fallback
-   - broader hybrid source logic
-   - eventual per-character or inspectable source attribution
-
-3. **Preview-planner depth**
-   The planner remains preview-only. The next decision is how much richer planned/current/dirty target inspection should become before any live apply work starts.
-
-4. **Small config layer shape**
-   The roadmap still calls for injection-ready config tightening. The exact shape for output mode, target enablement, route behavior, and editor-surface preferences remains open.
+- whether the over-input workspace header should become the permanent home for shared actions such as `Refresh`, `Clear Saved Block`, and auto-refresh state
+- final tab organization for the dense workspace after the initial `Prompting` / `Planning` consolidation
+- how much future-feature carveout should be visible now versus merely reserved in the layout
+- how to represent source strategy in the UI once it grows beyond a simple lorebook toggle / fallback concept
+- how to reserve space for future lorebook-related planning without prematurely implying live lorebook mutation
+- whether planning-related controls should eventually split into `Planning` and `Sources`, or remain merged until feature depth justifies a separate tab
 
 ### Known risks
-1. **Do not let UI reorganization weaken state ownership**
-   Any `1.5.1` work must preserve the distinction between raw generation, draft state, committed canonical body, and derived display text.
-
-2. **Do not let source controls silently become live routing**
-   The new `Sources` surface should remain planning/config-only unless live apply is intentionally opened later.
-
-3. **Do not accidentally weaken reroll protection**
-   Prompt seed logic remains one of the most important cross-cutting contracts.
-
-4. **Do not accidentally reinterpret initialization behavior**
-   Reset-on-script-load is still intentional and should not be broken casually while evolving UI or planner state.
-
-5. **History is full stored history, not unbounded history**
-   The dedicated `History` panel is meant to show the full currently stored set. Storage remains bounded by `maxHistoryEntries`.
+- reintroducing sidebar/workspace duplication after the family already worked to reduce it
+- letting UI rearrangement accidentally disturb canonical commit semantics
+- letting future-feature placeholders become misleading pseudo-features
+- overbuilding lorebook UI before the actual source/routing model is ready
+- creating a workspace layout that feels finished for current features but leaves no clean place for the next planned surfaces
 
 ## Next-Phase Intent
-The next phase should begin `1.5.1` from the completed `1.5.0.x` groundwork packet rather than treating the project as still in the same cleanup family.
+`1.5.1` should be grounded in **UI correction and future-feature carveout**.
 
-The safest reading is:
-- `1.5.0.x` completed the hardening and UI-role split needed before the next phase
-- `1.5.1` should now take one narrow forward step beyond that family while preserving all family-end contracts
+That means the next phase should prioritize:
 
-The best candidate starting direction for `1.5.1` is a narrow continuation of preview-only planning/config/source work rather than an immediate jump to live target mutation.
+1. **Fix and stabilize the UI layout**
+   - make the over-input workspace clearly primary
+   - keep the sidebar compact and non-duplicative
+   - move shared actions into the workspace header when that improves usability across tabs
+   - reduce friction caused by tab switching for core actions
 
-That means `1.5.1` should likely focus on one of these, not all at once:
-- tightening the planner state shape
-- making the `Sources` surface more explicit and legible
-- formalizing the small config layer for later routing behavior
-- improving target plan inspection without applying anything live yet
+2. **Make the UI deliberately future-aware**
+   - preserve space for source selection
+   - preserve a clear future lane for lorebook-related planning
+   - preserve room for later target planning growth without implying live apply exists now
+   - avoid packing the current UI so tightly around current-only features that future additions become awkward
+
+3. **Refine the tab model around workflow, not internal implementation layers**
+   - editing tab
+   - prompting tab
+   - planning/sources tab
+   - history tab
+   - shared actions above the tab body rather than trapped inside one tab or the sidebar
+
+4. **Keep `1.5.1` post-groundwork, not pre-groundwork**
+   - do not reopen the family’s already-settled authority contracts unless needed
+   - use the preserved state model as the stable base beneath the UI work
+   - only begin deeper feature growth once the UI is shaped to receive it cleanly
+
+A strong interpretation for the start of `1.5.1` is:
+
+> finish making the UI feel like the real long-term operating surface, and ensure it visibly leaves room for future sources/lorebook-related work, before expanding into deeper routing or source behavior.
 
 ## Recommended Next Read
-For the next chat, read in this order:
+The next chat should read these first:
 
-1. `docs/secret_info_panel_roadmap.md`
-2. `docs/secret_info_panel_architecture.md`
-3. `docs/secret_info_panel_progress_tracker.md`
-4. the `1.5.0.7c` working snapshot from this chat
-5. this handoff
+1. `live/current_version.md`
+2. `live/secret_info_panel_live.naiscript`
+3. `docs/secret_info_panel_architecture.md`
+4. `docs/secret_info_panel_roadmap.md`
+5. `docs/secret_info_panel_progress_tracker.md`
+6. this handoff
