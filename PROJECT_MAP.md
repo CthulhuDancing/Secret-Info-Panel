@@ -14,6 +14,11 @@ This is the working authoritative script file and the default starting point for
 - `docs/secret_info_panel_1_5_minimap.md`
 - `docs/changelog.md`
 
+## Scratch / temporary context
+
+- `scratch/` for temporary work files and transient handoff/context files
+- `scratch/CONTEXT_HANDOFF_ROADMAP.md` for compact GPT handoff context when needed
+
 ## Archive Locations
 
 - `archive/code/` for versioned historical script revisions
