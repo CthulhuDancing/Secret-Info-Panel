@@ -5,5 +5,9 @@ AGENT.md
 # Codex skill bundle
 Skills/
 
-# Runtime data should stay local-only
-/data/
+# Keep the data directory structure, but ignore runtime contents
+/data/**
+!/data/
+!/data/.gitkeep
+!/data/**/
+!/data/**/.gitkeep
