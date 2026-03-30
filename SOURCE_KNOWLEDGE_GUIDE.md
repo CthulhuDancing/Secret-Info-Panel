@@ -68,6 +68,7 @@ Typical uses:
 
 Current important scratch files:
 
+- `scratch/secret_info_panel_handoff_1_5_2_breakpoint.md`
 - `scratch/secret_info_panel_handoff_1_5_1_breakpoint.md`
 - `scratch/CONTEXT_HANDOFF_ROADMAP.md`
 
@@ -131,10 +132,11 @@ When architecture text conflicts with the live script, the live script wins.
 
 Read:
 
-1. `scratch/secret_info_panel_handoff_1_5_1_breakpoint.md` if present
-2. `docs/secret_info_panel_roadmap.md`
-3. `docs/secret_info_panel_progress_tracker.md`
-4. `docs/changelog.md`
+1. `scratch/secret_info_panel_handoff_1_5_2_breakpoint.md` if present
+2. `scratch/secret_info_panel_handoff_1_5_1_breakpoint.md` if present
+3. `docs/secret_info_panel_roadmap.md`
+4. `docs/secret_info_panel_progress_tracker.md`
+5. `docs/changelog.md`
 
 Interpret this as "recent intent plus older roadmap direction," not as a single perfectly synchronized source.
 
@@ -167,8 +169,9 @@ Read the most specific and current-looking file first.
 
 In this repo, a good default order is:
 
-1. `scratch/secret_info_panel_handoff_1_5_1_breakpoint.md`
-2. `scratch/CONTEXT_HANDOFF_ROADMAP.md`
+1. `scratch/secret_info_panel_handoff_1_5_2_breakpoint.md`
+2. `scratch/secret_info_panel_handoff_1_5_1_breakpoint.md`
+3. `scratch/CONTEXT_HANDOFF_ROADMAP.md`
 
 Use `scratch/` to answer questions like:
 
