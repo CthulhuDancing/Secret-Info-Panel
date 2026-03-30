@@ -4,9 +4,9 @@
 
 This file is the fast navigation map for the Secret Info Panel repository.
 
-## Start Here
+## Start here
 
-### If you need the live script
+### If you need current implementation truth
 
 - `live/secret_info_panel_live.naiscript`
 
@@ -14,47 +14,64 @@ This file is the fast navigation map for the Secret Info Panel repository.
 
 - `live/current_version.md`
 
-### If you need the implemented architecture
-
-- `docs/secret_info_panel_architecture.md`
-
-### If you need future direction
-
-- `docs/secret_info_panel_roadmap.md`
-
-### If you need package status and handoff state
-
-- `docs/secret_info_panel_progress_tracker.md`
-
 ### If you need repository history
 
 - `docs/changelog.md`
 
-## Repository Layout
+### If you need the docs index and interpretation rules
+
+- `docs/README.md`
+
+### If you need the implemented architecture and contracts
+
+- `docs/secret_info_panel_architecture.md`
+
+### If you need next-packet direction
+
+- `docs/secret_info_panel_roadmap.md`
+- `scratch/secret_info_panel_handoff_1_5_2_breakpoint.md`
+
+### If you need workstream status and handoff-forward state
+
+- `docs/secret_info_panel_progress_tracker.md`
+
+## Repository layout
 
 - `live/` - current promoted script and current version note
 - `docs/` - current project documentation
 - `data/` - runtime exports, tests, samples, or logs when present
 - `archive/` - archived code, docs, data, and older project materials
-- `scratch/` - temporary working files only
+- `scratch/` - temporary working files and recent handoff material
 
-## Current Documentation Reading Order
+## Current reading order
 
-1. `live/current_version.md`
-2. `docs/changelog.md`
-3. `docs/secret_info_panel_architecture.md`
-4. `docs/secret_info_panel_progress_tracker.md`
-5. `docs/secret_info_panel_roadmap.md`
+1. `live/secret_info_panel_live.naiscript`
+2. `live/current_version.md`
+3. `docs/changelog.md`
+4. `docs/README.md`
+5. `docs/secret_info_panel_architecture.md`
+6. `docs/secret_info_panel_roadmap.md`
+7. `docs/secret_info_panel_progress_tracker.md`
+8. `scratch/secret_info_panel_handoff_1_5_2_breakpoint.md`
 
-## Current Working Baseline
+## Current working baseline
 
-- Current promoted version: `1.5.1.6`
-- Current promoted script path: `live/secret_info_panel_live.naiscript`
-- Current documentation alignment date: `2026-03-29`
+- current promoted version: `1.5.1.6`
+- current promoted source artifact: `archive/code/secret_info_panel_v1_5_1_6.naiscript`
+- current promoted script path: `live/secret_info_panel_live.naiscript`
+- current docs alignment date: `2026-03-29`
 
-## Important Interpretation Notes
+## Current phase position
 
-- The architecture doc describes what is implemented now.
-- The roadmap describes what remains to be built.
-- The progress tracker records package completion state against the current live baseline.
+- `1.5.1` UI/config groundwork is already baseline
+- `1.5.2` has not started yet in the live script
+- the next intended packet is lorebook discovery rules and input-assembly rework
+- Outputs remains a planning surface, not a live routing surface
+
+## Important interpretation notes
+
 - If a doc conflicts with the live script, the live script wins.
+- The architecture doc explains what is implemented now.
+- The roadmap explains what should be built next from the current baseline.
+- The progress tracker records packet status, deferred work, and open decisions.
+- The `1.5.2` handoff is the strongest source for the immediate next packet after the live script and current version note.

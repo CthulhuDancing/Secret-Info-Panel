@@ -32,13 +32,13 @@ Everything else is supportive context.
 This is the most important directory.
 
 - `live/secret_info_panel_live.naiscript` is the current authoritative working script.
-- `live/current_version.md` records which archived snapshot was promoted into `live/` and what version label should be treated as current.
+- `live/current_version.md` records which archived snapshot was promoted into `live/secret_info_panel_live.naiscript` and what version label should be treated as current.
 
 If a GPT only has time to read two files, it should read these two.
 
 ### `docs/`
 
-This is the current documentation set, but not every file in it is equally fresh.
+This is the current documentation set, but not every file in it is equally strong.
 
 - `docs/README.md` explains the intended source-of-truth order.
 - `docs/secret_info_panel_minimap.md` is a fast navigation map.
@@ -49,7 +49,7 @@ This is the current documentation set, but not every file in it is equally fresh
 
 Important caution:
 
-Some docs still use older baseline labels such as `1.5.0.5` even though the promoted live snapshot is newer. For exact current behavior, always fall back to `live/secret_info_panel_live.naiscript` and `live/current_version.md`.
+The docs set on `main` was aligned to the promoted `1.5.1.6` baseline on `2026-03-29`, but the live script still outranks the docs for claims about exact implemented behavior.
 
 Use the docs for concepts, structure, and intent. Do not use them as stronger authority than the live files.
 
@@ -75,6 +75,7 @@ How to use `scratch/` safely:
 - Use it to understand recent intent, next-step priorities, or chat-established framing.
 - Do not let it override the live script for claims about what already exists in code.
 - If `scratch/` conflicts with `live/`, interpret that as "future intent vs current implementation," not as proof that the repo is broken.
+- If older handoff context is needed, check `archive/docs/` rather than assuming it still lives in `scratch/`.
 
 ### `archive/`
 
@@ -167,6 +168,7 @@ Read the most specific and current-looking file first.
 In this repo, a good default order is:
 
 1. `scratch/secret_info_panel_handoff_1_5_2_breakpoint.md`
+2. relevant archived handoff/context files in `archive/docs/` if more history is needed
 
 Use `scratch/` to answer questions like:
 

@@ -4,158 +4,153 @@
 
 Use this document to track implementation progress across the current roadmap workstreams and to hand work forward without losing architectural decisions.
 
-This tracker is aligned to the live `1.5.0.5` baseline, the current architecture document, and the current roadmap on `main`.
+This tracker is aligned to the live `1.5.1.6` baseline, the current architecture document, the current roadmap, and the current `1.5.2` breakpoint handoff.
 
-## Current Project State
+## Current project state
 
 - Project: Secret Info Panel
 - Roadmap Reference: `docs/secret_info_panel_roadmap.md`
 - Architecture Reference: `docs/secret_info_panel_architecture.md`
-- Current Working Version: `1.5.0.5`
-- Current Focus: groundwork packet before live routing
-- Last Updated: `2026-03-27`
+- Current Working Version: `1.5.1.6`
+- Current Focus: `1.5.2` input assembly and lorebook discovery groundwork
+- Last Updated: `2026-03-29`
 
-### Baseline State Confirmed in `1.5.0.5`
+### Baseline state confirmed in `1.5.1.6`
 
-- Sidebar-first control surface remains active.
-- Prompt fields, current output, generated state, prompt preview, and routed state are persisted separately during active use.
-- Current output now includes canonical body and derived display text layers.
+- The workspace is now split into `Secret Info`, `Prompting`, `Inputs`, `Outputs`, and `History`.
+- The sidebar is now the compact monitoring, advanced-controls, and diagnostics surface.
+- Prompt fields, current output, generated state, prompt preview, and routed state are persisted separately.
+- Current output includes canonical body and derived display text layers.
 - Raw diagnostic response and raw response body are preserved separately.
 - Same-turn reroll seed protection remains intact.
-- Secret-info editing is body-only at the canonical edit layer.
-- tempStorage is used for ephemeral edit-session drafts and active-field state.
-- Routed-state scaffolding exists for `memory`, `authorsNote`, and `lorebook`.
-- Diagnostics expose route adapter and route receipt summaries.
-- The script intentionally performs a clean-slate initialization reset on script load.
+- Secret Info label editing and body editing are separate workflows.
+- `Inputs` exists as the prepared home for source work but is not functionally wired yet.
+- `Outputs` exists as a planning surface with target toggles and a shared wrapper field.
+- Routed-state planner scaffolding exists for `memory`, `authorsNote`, and `lorebook`.
+- Diagnostics expose contract, routing, and planner summaries.
+- Normal script load does not perform a destructive reset; destructive reset is now explicit and guarded.
 
-### Immediate Interpretation
+### Immediate interpretation
 
-`1.5.0.5` is beyond the older pre-contract baseline. Canonical-output handling and routed-state scaffolding are implemented baseline, not future concepts.
+`1.5.1.6` is the current stable UI/config-groundwork endpoint.
 
-The next work is **not** direct production routing.
+The next work is:
 
-The current groundwork packet is:
+- **not** more baseline UI reshuffling
+- **not** direct production routing
+- **not** broad source-management abstraction
 
-- explicit authority and edit-ownership cleanup
-- script-panel migration for dense working/editing surfaces
-- preview-only routing planner extension on top of the routed-state scaffold
-- small injection-ready config tightening needed for later routing
+The current packet is:
 
-Live apply / clear / resync into Memory, Author's Note, and Lorebook remains deferred until that groundwork is stable.
+- `1.5.2` input assembly seam
+- early lorebook discovery/source rules
+- conservative source-state representation
+- contamination-safe context integration and diagnostics support
 
-### Initialization Interpretation
+Live output apply / clear / resync into Memory, Author's Note, and Lorebook remains deferred until that groundwork is stable.
 
-The current live script intentionally resets its own panel state to a fresh baseline on initialization.
-
-That should be treated as intended behavior, not as a persistence bug.
-
-Interpret current persistence this way:
-
-- active-use state boundaries matter
-- canonical ownership still matters
-- diagnostics and route scaffolding still matter
-- but the script does **not** currently target preserving panel state unchanged through initialization
-- future work should preserve the clean-slate initialize behavior unless project direction changes explicitly later
-
-## Workstream Status Board
+## Workstream status board
 
 | Workstream | Name | Status | Live Baseline | Notes |
 |---|---|---|---|---|
-| A | Commit Semantics and Authority Cleanup | Not Started | `1.5.0.5` baseline exists | Canonical body, derived display text, raw diagnostics, and temp draft infrastructure exist, but explicit ownership/commit semantics still need tightening. |
-| B | Dense Editor UI Surface Migration | Not Started | sidebar-first baseline | Dense editing still lives in the sidebar today; the script panel migration has not started. |
-| C | Routing-Ready Preview Planner | Not Started | scaffold baseline exists | Routed-state scaffolding exists, but preview-only target planning from committed canonical body is not implemented yet. |
-| D | Injection-Ready Config Tightening | Not Started | partial baseline only | Config-like values exist, but the small roadmap-aligned config layer for later routing is not yet tightened. |
-| E | Live Routing and Splicing Engine | Deferred | scaffold only | Do not start live apply / clear / resync until workstreams A-D are stable. |
-| F | Lorebook and Source Groundwork | Deferred | no dedicated implementation yet | This should land closer to prompt/routing co-development, not at the start of the groundwork packet. |
-| G | Prompt and Limited Routing Co-Development | Deferred | stable soft-style baseline | Prompt expansion and limited live routing depend on the groundwork packet landing first. |
-| H | Diagnostics, Sync, and Repair Completion | In Progress | current diagnostics baseline | Diagnostics already expose generation and route-scaffold state, but target sync validation and repair flows are not complete. |
+| A | Docs and Source-of-Truth Alignment | Complete | `1.5.1.6` | Docs updated to reflect the promoted `1.5.1.6` baseline and `1.5.2` packet intent. |
+| B | `1.5.1` UI/Config Groundwork | Complete | `1.5.1.6` | The workspace split, config placement, label/body workflow split, and guarded reset behavior are baseline. |
+| C | `1.5.2` Input Assembly Seam | Not Started | prepared UI exists | `Inputs` now has a stable home, but no generation-path source assembly is wired yet. |
+| D | Lorebook Discovery Rules Groundwork | Not Started | no functional source layer yet | Early source rules should remain conservative and character-biased. |
+| E | Manual Lorebook Selection UX | Deferred | placeholder only | `Selected lorebooks` exists as planner state only; custom selector UX is later work. |
+| F | Live Output Routing / Apply Engine | Deferred | planner scaffold only | Do not start live apply / clear / resync until C and D are stable. |
+| G | Broader Source-Model Expansion | Deferred | no generalized source model yet | Do not broaden into non-character or large framework work during the first `1.5.2` packet. |
+| H | Diagnostics and Validation Support for `1.5.2` | Not Started | diagnostics baseline exists | Extend diagnostics only as needed to inspect source assembly and contamination safety. |
 
 Status values: Not Started, In Progress, Blocked, Complete, Deferred
 
-## Locked Decisions
+## Locked decisions
 
 - The live script is the implementation source of truth.
 - The roadmap on `main` is the future-direction source of truth for current sequencing.
-- Canonical body is the downstream source for future routing.
+- `canonicalBody` is the downstream source for future routing.
 - Raw model output remains diagnostic only.
-- Derived display text is rebuilt from canonical body rather than treated as the editable truth.
+- `derivedDisplayText` is rebuilt from committed canonical body.
 - Unsaved draft state must remain draft-only.
-- Sidebar remains the compact control and monitoring surface.
-- The script panel is the intended dense working/editing surface.
-- Diagnostics remain last in the sidebar.
-- tempStorage is valid for ephemeral editor/session convenience only.
-- Same-turn rerolls must remain anchored to a stable seed for the current story turn.
+- Sidebar remains the compact monitoring and diagnostics surface.
+- Workspace / script panel remains the dense working and editing surface.
+- `Inputs` is the next active architecture lane.
+- `Outputs` remains planning-only for now.
 - Manual refresh remains the safe baseline.
 - Auto-refresh remains opt-in only.
+- Same-turn rerolls must remain anchored to a stable seed for the current story turn.
 - Narrow structural changes remain preferred over broad rewrites.
-- Routed-state scaffolding already exists and should be extended, not discarded.
 - Live routing must derive from committed canonical body, not raw diagnostic output.
-- Clean-slate initialization behavior on script load is intended baseline behavior and should be preserved unless project direction changes explicitly later.
+- The current tab split and config homes should be treated as baseline unless a concrete UX problem appears.
 
-## Open Decisions
+## Open decisions
 
-- Exact save/cancel flow wording and commit UX for dense editors
-- Preview-planner state shape for dirty/current/planned target status
-- Small config layer shape for output mode, target enablement, route behavior, and editor-surface preferences
-- Lorebook routing model: one master entry, per-character entries, or hybrid
-- Manual edit sync behavior once live routing exists: auto-apply, dirty-state only, or explicit apply
-- Route apply behavior on refresh
-- Receipt shape: hash-only, version counter, or richer per-target receipt object
-- Ownership marker format and replacement policy for each target surface
-- Default multi-character output mode
-- Author's Note scope and length budget
+- Exact source-state shape for the first `1.5.2` packet
+- Where the input assembly seam should live in the implementation, as long as it stays tied to context-building work
+- How `Auto-discover characters` and `Selected lorebooks` should combine when both are enabled
+- What the first conservative lorebook discovery rules should allow
+- How the later custom lorebook selector should be introduced without reopening the baseline UI packet
+- What extra diagnostics are actually needed for the first source-assembly pass
+- How much explicit user-facing explanation the `Inputs` tab should provide once it becomes functional
 
-## Workstream Detail Logs
+## Workstream detail logs
 
-### A - Commit Semantics and Authority Cleanup
+### A - Docs and Source-of-Truth Alignment
+
+**Status:** Complete
+
+Completion target:
+
+- docs reflect `1.5.1.6` rather than the older `1.5.0.5` baseline
+- docs describe the current UI surface split accurately
+- roadmap and tracker agree that `1.5.2` starts with input assembly and lorebook discovery groundwork
+
+### B - `1.5.1` UI/Config Groundwork
+
+**Status:** Complete
+
+Completion target:
+
+- stable workspace tabs
+- stable config placement
+- separate Secret Info label/body workflows
+- prepared `Inputs` and `Outputs` homes
+- guarded explicit reset behavior
+
+This work is now baseline, not the next packet.
+
+### C - `1.5.2` Input Assembly Seam
 
 **Status:** Not Started
 
 Completion target:
 
-- explicit save/cancel semantics for user edits
-- unsaved edits remain draft-only
-- raw diagnostic layers remain diagnostic and fallback only
-- canonical body changes only on explicit commit
-- derived display text rebuilds from committed canonical body
+- define the code seam that assembles effective source input for generation
+- make the current source assumptions inspectable
+- keep the implementation narrow and low-risk
+- preserve reroll and contamination protections
 
-This is the highest-priority code-facing workstream, but documentation and sequencing should be aligned before code work starts.
-
-### B - Dense Editor UI Surface Migration
+### D - Lorebook Discovery Rules Groundwork
 
 **Status:** Not Started
 
 Completion target:
 
-- sidebar remains for refresh controls, summaries, route state, and diagnostics
-- script panel becomes the main dense working/editing surface
-- canonical body editor, prompt editors, previews, and save/cancel actions move out of the sidebar
-- no long-lived confusion remains between competing editor surfaces
+- establish the first conservative source rules
+- keep early behavior character-biased
+- separate auto-discovery from explicitly selected lorebooks
+- avoid pretending selector UX already exists
 
-### C - Routing-Ready Preview Planner
+### E - Manual Lorebook Selection UX
 
-**Status:** Not Started
+**Status:** Deferred
 
-Completion target:
+Completion target when this workstream opens:
 
-- extend the routed-state scaffold into preview-only planning
-- compute per-target desired fragments from committed canonical body
-- represent dirty/current/planned target state clearly
-- expose target previews for `memory`, always-on Lorebook, and `authorsNote`
-- keep this layer preview-only until live routing is intentionally started later
+- custom selector flow exists for explicitly selected lorebooks
+- selection UX layers onto the current `Inputs` surface without reopening the baseline packet
 
-### D - Injection-Ready Config Tightening
-
-**Status:** Not Started
-
-Completion target:
-
-- formalize the small set of config decisions needed for later routing
-- keep the mapping tight rather than introducing a broad schema framework
-- support future output mode, target enablement, route behavior, and editor-surface preferences
-- avoid over-abstracted config infrastructure
-
-### E - Live Routing and Splicing Engine
+### F - Live Output Routing / Apply Engine
 
 **Status:** Deferred
 
@@ -166,85 +161,71 @@ Completion target when this workstream opens:
 - per-target sync state reflects real applied content
 - receipt validation works against live target state
 
-This workstream should not begin until A-D have produced stable, testable contracts.
+This workstream should not begin until C and D have produced stable, testable contracts.
 
-### F - Lorebook and Source Groundwork
-
-**Status:** Deferred
-
-Completion target when this workstream opens:
-
-- hybrid source model support exists
-- always-on Lorebook can be represented as a future lane in planning state
-- character/source choices remain understandable and testable
-
-This belongs shortly before the main prompt-engineering and live-routing phase, not at the start of the current packet.
-
-### G - Prompt and Limited Routing Co-Development
+### G - Broader Source-Model Expansion
 
 **Status:** Deferred
 
 Completion target when this workstream opens:
 
-- prompt engineering is developed alongside carefully limited live routing
-- preservation of unrelated user-authored content remains testable
-- manual baseline and safe defaults remain intact
+- non-character or more generalized source handling can be introduced where justified
+- the resulting model remains understandable and proportionate to the project size
 
-### H - Diagnostics, Sync, and Repair Completion
+This belongs after the first conservative `1.5.2` packet, not at the start of it.
 
-**Status:** In Progress
+### H - Diagnostics and Validation Support for `1.5.2`
+
+**Status:** Not Started
 
 Already present:
 
-- current diagnostics cover run state, prompt checks, current output, raw response, canonical contract version, route adapter summary, and route receipt summary
+- current diagnostics cover run state, prompt checks, current output, raw response, canonical contract version, route adapter summary, route receipt summary, and route planner summary
 
-Still missing:
+Needed for `1.5.2` only if justified:
 
-- target-specific applied-content inspection
-- real sync-state validation against live targets
-- repair / reapply actions
-- route ownership troubleshooting flows
+- source-assembly inspection that helps validate the new seam
+- contamination-safety checks specific to source assembly
+- minimal extra troubleshooting support for the new packet
 
-## Regression Checklist
+## Regression checklist
 
 Run this before marking later workstreams complete if they touch shared behavior.
 
 - same-turn reroll protection still works
 - prompt preview still rebuilds correctly
-- canonical body persists correctly during active use
+- canonical body persists correctly
 - display text still rebuilds correctly from canonical body
 - raw diagnostics remain preserved
 - manual edits do not mutate raw diagnostics
 - temp edit-session state does not become a durable source of truth
-- route scaffolding fields remain coherent after save/load cycles during active use
-- preview-planner state remains preview-only until live routing is intentionally introduced
-- diagnostics remain last in the sidebar
-- no live story-context contamination is introduced early
-- intended clean-slate initialization behavior remains unchanged
+- route scaffolding fields remain coherent after save/load cycles
+- `Inputs` state does not silently become live routing behavior
+- `Outputs` remains planning-only until intentionally changed later
+- diagnostics remain coherent after `1.5.2` seam changes
 
-## Next Handoff Block
+## Next handoff block
 
 ```md
 Project: Secret Info Panel
 Architecture Reference: docs/secret_info_panel_architecture.md
 Roadmap Reference: docs/secret_info_panel_roadmap.md
 Progress Tracker: docs/secret_info_panel_progress_tracker.md
-Current Working Version: 1.5.0.5
-Current Focus: groundwork packet before live routing
-Primary Active Workstreams: A commit semantics and authority cleanup; B dense editor UI migration; C routing-ready preview planner; D injection-ready config tightening
-Completed Baseline: canonical output contract landed; routed-state and receipt scaffolding landed; diagnostics baseline landed; sidebar-first operating surface still active; clean-slate initialize behavior is intentional baseline behavior
-In-Progress Workstreams: H diagnostics baseline only
-Deferred Until After Groundwork: E live routing and splicing engine; F lorebook and source groundwork; G prompt and limited routing co-development
-Locked Decisions: live script is source of truth; roadmap on main defines current sequencing; canonical body routes downstream; raw output remains diagnostic; derived display text is rebuilt; unsaved drafts stay draft-only; sidebar stays compact control surface; script panel becomes dense working surface; diagnostics remain last; tempStorage drafts are ephemeral only; reroll seed protection must remain intact; manual refresh remains safe baseline; auto-refresh remains opt-in; clean-slate initialization behavior is intended and preserved unless direction changes explicitly
-Open Decisions Still Pending: dense-editor commit UX; preview-planner state shape; small config layer shape; lorebook routing model; manual edit sync behavior; receipt shape; route apply behavior on refresh; ownership marker policy; default multi-character mode; Author's Note scope
-Known Risks / Bugs: avoid letting draft state become silent durable truth during active use; avoid collapsing canonical/display/raw separation; avoid jumping into live routing before the groundwork packet stabilizes; avoid breaking reroll protection; avoid broad rewrites that discard scaffolded route state; avoid accidentally weakening intended initialize behavior
-What Must Be Preserved: `1.5.0.5` baseline contracts, canonical-body source-of-truth rule, reroll protection, diagnostics last, intended clean-slate initialization behavior, narrow structural changes only
+Current Working Version: 1.5.1.6
+Current Focus: 1.5.2 input assembly and lorebook discovery groundwork
+Primary Active Workstreams: C input assembly seam; D lorebook discovery rules groundwork
+Completed Baseline: 1.5.1 UI/config groundwork; workspace tab split; separate label/body edit flows; route-planner scaffolding; guarded destructive reset; compact sidebar plus dense workspace surface model
+Deferred Until After First 1.5.2 Packet: E manual lorebook selector UX; F live output routing/apply engine; G broader source-model expansion
+Locked Decisions: live script is source of truth; roadmap on main defines sequencing; canonical body routes downstream; raw output remains diagnostic; derived display text is rebuilt; unsaved drafts stay draft-only; sidebar stays compact monitoring surface; workspace remains dense editing surface; Inputs is the next active lane; Outputs remains planning-only; reroll seed protection must remain intact; manual refresh remains safe baseline; auto-refresh remains opt-in; narrow structural changes only
+Open Decisions Still Pending: first source-state shape; exact input assembly seam; auto-discover vs selected-lorebooks interaction; first conservative lorebook rules; later custom selector path; minimal diagnostics additions needed for 1.5.2
+Known Risks / Bugs: avoid source-framework sprawl; avoid weakening reroll protection; avoid collapsing Inputs and Outputs concepts; avoid jumping into live routing before source assembly stabilizes; avoid reopening already-settled UI packet decisions
+What Must Be Preserved: 1.5.1.6 baseline contracts, canonical-body source-of-truth rule, reroll protection, Outputs planning-only status, current sidebar/workspace role split, narrow structural change preference
 Requested Task For This Chat:
 ```
 
-## Alignment Note
+## Alignment note
 
-This tracker should now be read as a roadmap-aligned sequencing document.
+This tracker should be read as a roadmap-aligned sequencing document for the current live baseline.
 
 If documents disagree about what to build next:
 
@@ -254,3 +235,4 @@ If documents disagree about what to build next:
 4. `docs/secret_info_panel_roadmap.md`
 5. `docs/secret_info_panel_architecture.md`
 6. this tracker
+7. `scratch/secret_info_panel_handoff_1_5_2_breakpoint.md`

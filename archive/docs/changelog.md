@@ -2,8 +2,7 @@
 
 ## 2026-03-29
 
-- aligned `docs/README.md`, `docs/secret_info_panel_minimap.md`, `docs/secret_info_panel_architecture.md`, `docs/secret_info_panel_roadmap.md`, and `docs/secret_info_panel_progress_tracker.md` to the promoted `1.5.1.6` baseline and the pre-`1.5.2` repo state
-- clarified across the docs set that `1.5.2` begins with lorebook discovery rules and input-assembly work
+- moved older scratch handoff/context files into `archive/docs/` and preserved only the current `1.5.2` handoff in `scratch/`
 - promoted `archive/code/secret_info_panel_v1_5_1_6.naiscript` to `live/secret_info_panel_live.naiscript`
 - updated `live/current_version.md` to reflect promoted artifact `1.5.1.6`
 - aligned `docs/README.md` and `docs/secret_info_panel_minimap.md` to the current promoted artifact note

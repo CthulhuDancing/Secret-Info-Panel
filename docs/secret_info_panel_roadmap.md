@@ -2,7 +2,7 @@
 
 ## Purpose
 
-This document describes the major work that remains after the current `1.5.0.5` live baseline.
+This document describes the major work that remains after the current `1.5.1.6` live baseline.
 
 It should be read as future direction only. If documents disagree, use them in this order:
 
@@ -10,413 +10,250 @@ It should be read as future direction only. If documents disagree, use them in t
 2. `live/current_version.md`
 3. `docs/changelog.md`
 4. this document and the rest of the current docs
+5. relevant current handoff material in `scratch/`
 
-## Current Confirmed Baseline
+## Current confirmed baseline
 
-The live `1.5.0.5` baseline already includes:
+The live `1.5.1.6` baseline already includes:
 
-- split prompt fields
-- separate prompt preview storage
-- separate current output, generated runtime state, and routed-state storage
+- split workspace tabs for `Secret Info`, `Prompting`, `Inputs`, `Outputs`, and `History`
+- compact sidebar roles for status, advanced controls, and diagnostics
+- separate prompt fields, current output, generated runtime state, prompt preview, and routed state storage
 - canonical body vs derived display text separation
 - preserved raw diagnostic response layers
 - same-turn reroll seed protection
-- sidebar editing for secret-info body, system prompt, and script prompt
 - tempStorage-backed edit-session handling
-- diagnostics that expose route adapter and receipt summaries
-- route-layer scaffolding for `memory`, `authorsNote`, and `lorebook`
-- intended clean-slate initialization behavior on script load
+- separate Secret Info label/body edit flows
+- route-layer scaffolding and preview-planner state for `memory`, `authorsNote`, and `lorebook`
+- a shared editable output wrapper field
+- guarded destructive reset behavior rather than normal reset-on-load behavior
+- placeholder input controls for `Auto-discover characters` and `Selected lorebooks`
 
-The project is therefore past the older pre-contract baseline. The next major refactor should extend the current state contracts, not discard them.
+The project is therefore past the older `1.5.0.5` groundwork framing. The next packet should extend the current `1.5.1.6` contracts rather than reopen them.
 
-## Current Interpretation
+## Current interpretation
 
-The current docs and live script already support a stronger baseline than the older roadmap language implied. The next major revision should not jump straight to finished live routing.
+The correct next packet is **not** live routing.
 
-The next packet should first strengthen:
+The correct next packet is **`1.5.2` input assembly and lorebook discovery groundwork**.
 
-- authoritative-state ownership
-- edit-session commit semantics
-- UI surface roles
-- routing-ready planning data
-- injection readiness without early context contamination
+Interpret that as:
 
-That groundwork should make later prompt engineering, lorebook work, and live injection easier to validate and safer to ship.
+- use the new `Inputs` tab as the visible home for the work
+- preserve the current `1.5.1` UI/config decisions unless a concrete UX problem appears
+- keep `Outputs` planning-only while source assembly matures
+- stay conservative and character-biased at first
+- prepare future routing by improving source assembly, not by turning on live apply early
 
-## Initialization Interpretation
-
-The current script intentionally resets its own panel state to a fresh baseline on initialization.
-
-That should be treated as current intended behavior, not as a persistence bug.
-
-Accordingly:
-
-- the storage split still matters
-- state ownership still matters
-- authoritative state during active use still matters
-- but the project does **not** currently target preserving panel state unchanged through initialization
-- future work should preserve the intentional clean-slate initialize behavior unless project direction changes explicitly later
-
-## Confirmed Target Outcomes
-
-The project should evolve into a lightweight NovelAI Storyteller userscript for **runtime present-state generation**.
-
-Its primary use remains **character thoughts and reflections**, but the deeper project identity is broader: a practical tool for continuously morphing hidden or semi-hidden state information that the user can review, edit, and eventually route into story-context surfaces.
-
-The intended end state includes:
-
-- **two real modes**
-  - silent read-along for inspiration
-  - continuity mode with future routing back into context
-- **manual refresh as the safe baseline**
-- **auto-refresh as an opt-in feature only**
-- **editable output with explicit ownership rules**
-- **sidebar as the compact monitoring/control surface**
-- **script panel as the dense working/editing surface**
-- **future routing to Memory, always-on Lorebook, and Author's Note**
-- **future hybrid character-source logic**
-- **repo-manageable project structure with low break risk**
-
-## Design Principles To Preserve
+## Design principles to preserve
 
 1. Keep the canonical-output contract intact.
 2. Keep same-turn reroll protection intact.
 3. Do not contaminate generated turns during validation.
-4. Keep authoritative working-state boundaries reliable during active use.
-5. Preserve the intended clean-slate initialization behavior unless the project direction explicitly changes.
+4. Keep authoritative working-state boundaries reliable.
+5. Keep the current sidebar/workspace role split intact.
 6. Treat raw model output as diagnostic, not authoritative truth.
 7. Make user edits authoritative only after explicit save.
-8. Keep UI roles clear and readable.
+8. Keep `Inputs` and `Outputs` semantically distinct.
 9. Prefer narrow structural changes over broad rewrites.
 10. Keep the project practical, teachable, and repo-manageable.
 
-## `1.5.0.x` Family Continuity Note
+## `1.5.2` packet intent
 
-The next refactor should be read as a continuation of the `1.5.0.x` family’s hardening work rather than as a reset of the project.
+`1.5.2` should begin the **lorebook discovery rules and input-assembly rework**.
 
-Carry these family-level interpretations forward:
+Strong interpretation of what `1.5.2` should focus on first:
 
-- treat routed receipt / ownership scaffolding as already-landed baseline work in `1.5.0.5`
-- treat compact routing diagnostics as a practical inspection surface, not as a large debug subsystem
-- preserve graceful interruption / failure cleanup as a cross-cutting hardening concern during near-term refactors
-- keep the next packet narrow and safety-oriented even while it prepares the next major revision
-- preserve intentional clean-slate initialize behavior while tightening active-use ownership rules
-
-## Authoritative State Model To Target
-
-The next refactor should make this state ladder explicit:
-
-1. **Raw generation**
-   - diagnostic only
-   - preserved for fallback and debugging
-2. **Uncommitted working draft**
-   - temporary edit-session state
-   - never silently becomes canonical
-3. **Committed canonical body**
-   - authoritative downstream source for future routing
-4. **Derived display text**
-   - rebuilt from canonical body
-   - not the editable truth
-5. **Future route fragments / route plans**
-   - derived from committed canonical body only
-
-This should become the stable ownership model before live route apply is introduced.
-
-## What To Implement Now
-
-### A. Authoritative Output and Edit Ownership Cleanup
+### 1. Define the input assembly seam
 
 Required outcomes:
 
-- explicit save/cancel semantics for user edits
-- unsaved edits remain draft-only
-- `rawLastOutput` remains diagnostic and fallback
-- canonical body changes only on explicit commit
-- derived display text rebuilds from committed canonical body
+- rework how the script assembles and feeds input to the secret-info generation call
+- give the `Inputs` tab a real architectural purpose rather than leaving it as placeholders only
+- keep the seam easy to inspect and debug
+- avoid broad config frameworks or speculative source abstractions
 
-### B. Dense Editor UI Migration
-
-Required outcomes:
-
-- sidebar remains for refresh controls, summaries, route state, and diagnostics
-- script panel becomes the main working surface for prompt fields, canonical body editing, and future previews
-- temporary UI awkwardness during the split is acceptable only if resolved quickly in follow-up subrevisions
-
-### C. Routing-Ready Planner Layer
+### 2. Build the first source-model layer
 
 Required outcomes:
 
-- keep routed-state scaffolding
-- compute target-ready preview fragments from committed canonical body
-- support preview-only route planning before live apply
-- represent dirty/current/planned target state clearly
-- expose enough route-plan state for diagnostics and storage inspection
+- ordinary use remains `Auto-discover characters`
+- the first explicit lorebook-input lane remains `Selected lorebooks`
+- the early model stays conservative and character-biased
+- avoid broadening too quickly into non-character source handling
 
-### D. Injection-Ready Config Tightening
+### 3. Use the right technical seam
 
 Required outcomes:
 
-- formalize the small set of config decisions needed for later routing
-- keep them tightly mapped rather than over-schema-driven
-- support future output mode, target enablement, route behavior, and editor-surface preferences without enabling live apply yet
+- prefer context-building work such as `onBeforeContextBuild` or equivalent source-assembly helpers
+- keep source assembly separate from output routing
+- keep contamination safety and turn-boundary reasoning explicit
 
-## What To Defer
+### 4. Keep Outputs planning-only
 
-### Defer Until After the Next Groundwork Packet
+Required outcomes:
 
-- full target apply / clear / resync into Memory, Author's Note, and Lorebook
-- ownership-marker splicing into live targets
+- `Outputs` remains a structural preview/planning surface
+- wrapper remains editable as prepared config, not as a live routing feature
+- target toggles remain planner state rather than live writes
+
+### 5. Preserve the `1.5.1` UI/config model
+
+Required outcomes:
+
+- no need to reopen the major tab split
+- no need to move config homes again unless a concrete usability issue appears
+- no need to collapse `Inputs` back into another tab
+
+## What to implement now
+
+### A. Input assembly seam
+
+Required outcomes:
+
+- define the code path that builds the effective generation inputs
+- make the current source assumptions inspectable
+- keep the seam narrow enough that future changes do not sprawl through unrelated systems
+
+### B. Lorebook discovery rules groundwork
+
+Required outcomes:
+
+- define how lorebook-backed input discovery should be interpreted in the first conservative pass
+- preserve a clear distinction between auto-discovery and explicitly selected lorebooks
+- avoid pretending the selector UX already exists
+
+### C. Source-state representation
+
+Required outcomes:
+
+- store only the small amount of durable source-selection state needed for the early packet
+- keep the shape tight rather than schema-heavy
+- make the state readable in repo handoffs and storage inspection
+
+### D. Context and contamination safety validation
+
+Required outcomes:
+
+- verify that the new input assembly does not weaken same-turn reroll protection
+- verify that the new source assembly does not leak unstable draft or planner state into generation
+- extend diagnostics only as needed to inspect the new seam
+
+## What to defer
+
+### Defer until after the first `1.5.2` groundwork packet
+
+- live apply / clear / resync into Memory, Author's Note, and Lorebook
 - receipt validation against real target content
-- full Lorebook character discovery system
-- multi-character formatting expansion
-- repair tooling beyond what is needed to validate the new contracts
-- preset prompt packs and broader convenience features
-- broad migration layers or compatibility scaffolding for older archived revisions
+- ownership-marker splicing into live targets
+- per-target wrapper settings
+- advanced output write modes
+- finished lorebook selector UX
+- multi-character expansion logic
+- non-character generalized source handling
+- lorebook mutation workflows
+- broad routing/default-behavior architecture
+- rigid extractor / schema-style redesign
+- broad compatibility layers for older archived revisions
 
-## Top 3 Next Code Changes In `live/secret_info_panel_live.naiscript`
-
-### 1. Make edit ownership explicit
-
-Implement a stricter distinction between:
-
-- raw generation
-- unsaved draft
-- committed canonical body
-- derived display text
-
-This is the highest-value code change because it improves validation safety, future routing safety, and prompt-work clarity.
-
-### 2. Introduce the script panel as the main working surface
-
-Move dense editing out of the sidebar first, keeping the sidebar as the stable control and monitoring surface.
-
-The first candidates to move are:
-
-- canonical body editor
-- system prompt editor
-- script prompt editor
-- prompt preview / future route preview
-- save/cancel/commit actions
-
-### 3. Upgrade routed-state from placeholder scaffold to preview planner
-
-Do not implement live apply yet. Instead:
-
-- compute per-target desired fragments from committed canonical body
-- track dirty/planned/current target status
-- expose Memory / always-on Lorebook / Author's Note previews
-- support mode-based and per-target preferences in planning state only
-
-## Anti-Sprawl Guardrails
+## Anti-sprawl guardrails
 
 Do **not** build these yet:
 
-- finished production target apply engine
-- generalized schema/config framework
-- full character-source discovery engine
-- multi-character expansion logic
-- lorebook mutation system
-- heavy modal/window-first redesign
-- universal runtime-state framework abstractions
+- finished production routing engine
+- large generalized source framework
+- universal config schema layer
+- heavy modal or window-first redesign
+- full multi-character or world-state expansion
 - broad compatibility code for older revisions
-- rigid extractor / JSON-schema style output redesign
+- speculative lorebook-management tooling
 
-## Validation Plan By Phase
+## Recommended phased sequence
 
-### Phase 1 - Authority and Edit-Session Refactor
+### Phase A - Input assembly seam
 
-Validation focus:
+Create the narrow code seam that defines what source material is assembled and how it reaches generation.
 
-- generate -> edit draft -> cancel -> reload
-- generate -> edit draft -> save -> reload
-- failure state where generation succeeded but commit did not happen
-- `storyStorage` inspection for ownership correctness during active use
+### Phase B - Conservative source model
 
-Success indicators:
+Wire the first limited source rules around auto-discovered characters and selected lorebooks without over-generalizing.
 
-- unsaved edits never become durable truth during active use
-- canonical body persists only on explicit save during active use
-- raw fallback remains intact
-- derived display rebuilds correctly
-- intentional clean-slate initialization behavior remains unchanged
+### Phase C - Diagnostics and validation support
 
-### Phase 2 - UI Split
+Add only the inspection needed to confirm that source assembly is doing what the packet intends.
 
-Validation focus:
+### Phase D - Selector and UX follow-up
 
-- active-use reload cycles
-- dense prompt/output edits in the script panel
-- sidebar readability during and after the split
-- persistence of the new working/editing flow during active use
+Only after the early source model is stable should the project begin a custom lorebook selector workflow.
 
-Success indicators:
+### Phase E - Routing follow-up
 
-- sidebar remains compact and readable
-- script panel materially improves editing comfort
-- no long-lived split-state confusion between two competing editors
-- the new editing model does not weaken intended initialize behavior
+Only after the source model is understandable and stable should output-routing work resume.
 
-### Phase 3 - Routing-Ready Planner
+## Validation focus for `1.5.2`
 
-Validation focus:
+### Input assembly validation
 
-- canonical body edits produce deterministic target previews
-- target dirty/current/planned state transitions remain coherent
-- route-plan state stays analyzable in `storyStorage` during active use
-- reroll protection still behaves correctly
+- confirm the effective source assembly is understandable
+- confirm manual refresh still behaves safely
+- confirm auto-refresh still remains opt-in and bounded
 
-Success indicators:
+### Contamination validation
 
-- each target can answer "what would be sent"
-- desired signatures or equivalent target-plan identifiers update predictably
-- no live story-context contamination yet
-
-### Phase 4 - Lorebook and Source Groundwork
-
-Validation focus:
-
-- controlled tests for keyed, always-on, and inferred source strategies
-- character-source decisions remain understandable
-- route planning can represent always-on Lorebook as a future lane
-
-Success indicators:
-
-- source selection logic is understandable and testable
-- always-on Lorebook can be planned without forcing live routing yet
-- complexity stays proportional to the project size
-
-### Phase 5 - Prompt and Injection Co-Development
-
-Validation focus:
-
-- target-by-target route application tests
-- preservation of unrelated user-authored content
-- receipt and ownership checks
-- escalation/drift testing with manual vs auto modes
-
-Success indicators:
-
-- live apply is reversible or repairable
-- owned blocks are the only blocks touched
-- safe defaults remain conservative
-
-## Explicit Risk Notes
-
-### State Risk
-
-The largest immediate risk is allowing temp draft state or unsaved UI state to become silent durable truth during active use.
-
-### Routing Risk
-
-Jumping straight into production apply would bind unstable ownership rules to Memory, Lorebook, and Author's Note too early.
-
-### Edit-Session Risk
-
-The useful parts of temp draft handling should remain, but commit semantics need to become stricter. The main failure modes are:
-
-- drafts becoming annoying and fragile
-- drafts accidentally becoming canonical without explicit save
-
-### Reroll / Contamination Risk
-
-This remains non-negotiable. Same-turn rerolls must stay anchored to stable turn-backed seed state, and future routing must derive from committed canonical body rather than raw output.
-
-### Initialization Risk
-
-Future refactors should not accidentally erase the intended difference between:
-
-- active-use authoritative state handling
-- deliberate clean-slate initialization behavior
-
-### Performance Risk
-
-The most noticeable performance bottlenecks are expected to remain:
-
-- UI refresh churn
-- GLM API generation latency
-
-The next packet should therefore avoid unnecessary UI rebuild work and keep generation triggering conservative.
-
-## Future Routing Direction
-
-When live routing is eventually introduced, the intended context-strength direction should be:
-
-1. **Memory**
-2. **Always-on Lorebook**
-3. **Author's Note**
-
-Normal keyed Lorebook remains relevant, but more as part of the character/source model than as the first live routing implementation.
-
-The longer-term automation direction should be:
-
-- manual baseline
-- mode-based automation
-- eventually per-target configurability
-
-Safe defaults matter more than maximum automation.
-
-## Character / Source Direction
-
-The longer-term character-source model should be hybrid.
-
-Preferred order of trust:
-
-1. explicit or keyed source declarations
-2. discoverable lorebook-backed character sources
-3. story-text inference as fallback
-
-This work should happen shortly before the main prompt-engineering and live routing phase rather than at the very start of the next packet.
-
-## Recommended Phased Roadmap
-
-### Phase A - Commit Semantics and Authority Cleanup
-
-Make save/cancel behavior explicit and preserve raw output as diagnostic fallback only.
-
-### Phase B - Script Panel Migration
-
-Move dense working/editing surfaces out of the sidebar while preserving the sidebar as the stable control and monitoring plane.
-
-### Phase C - Routing-Ready Planner
-
-Extend routed-state into preview-only target planning without applying to live story-context surfaces yet.
-
-### Phase D - Lorebook / Source Groundwork
-
-Add the hybrid source model and always-on Lorebook planning lane.
-
-### Phase E - Prompt and Limited Routing Co-Development
-
-Begin prompt engineering and carefully scoped live routing once the ownership model, UI split, and preview planner are stable enough that tests remain interpretable.
-
-### Phase F - Broader Injection and Multi-Character Growth
-
-Expand routing semantics, target automation, and multi-character handling only after the earlier phases prove stable.
-
-## Completion Criteria For The Next Major Revision
-
-The next major revision should be considered complete when:
-
-- explicit commit semantics exist for current output editing
-- raw output, draft state, canonical body, and derived display text are clearly separated
-- the script panel is the main dense working surface
-- route planning previews exist for future targets without requiring live apply
-- manual refresh remains dependable
-- auto-refresh remains opt-in
 - same-turn reroll protection still behaves correctly
-- `storyStorage` remains sufficient for GPT-aided state diagnosis during active use
-- the project remains lightweight and readable enough to hand off revision-by-revision
-- intended clean-slate initialization behavior remains intact unless deliberately changed later
+- prompt seed behavior remains stable
+- draft state does not become generation truth
+- planner state does not silently become applied output state
 
-## Final Direction
+### Source-model validation
 
-The correct direction is not to replace the project with a rigid extractor or an over-abstracted routing framework.
+- `Auto-discover characters` and `Selected lorebooks` remain distinct concepts
+- the early model stays conservative instead of pulling in too much material
+- later selector UX can be layered in without rewriting the packet
+
+## Explicit risk notes
+
+### Source-sprawl risk
+
+The largest immediate risk is turning `1.5.2` into a broad source-management framework instead of a narrow input-assembly packet.
+
+### Contamination risk
+
+Jumping into context-building work too loosely could weaken the current reroll and seed protections.
+
+### UI churn risk
+
+Reopening the tab structure or config placement too early would re-spend effort that `1.5.1` already stabilized.
+
+### Routing risk
+
+Moving into live output routing before the input model is stable would skip the intended packet order and make failures harder to interpret.
+
+## Future direction after `1.5.2`
+
+Once the first `1.5.2` packet is stable, the likely later sequence is:
+
+1. custom lorebook selector UX
+2. broader source-model refinement where justified
+3. prompt and source co-development on top of the stabilized seam
+4. carefully scoped live routing work
+
+That later work should still preserve:
+
+- canonical-body ownership
+- planner-before-apply sequencing
+- conservative safe defaults
+- low break risk
+
+## Final direction
 
 The stronger version of Secret Info Panel should remain:
 
 - a soft continuity / interiority tool
 - grounded in explicit canonical-output ownership
-- safe to validate and evolve revision-by-revision
-- increasingly routing-capable without becoming fragile
+- safe to validate packet-by-packet
+- increasingly capable without becoming over-abstracted
 - practical for real users and still understandable as a learning project
-- intentionally clean-slate on initialization unless the project direction later changes by design
+
+The correct next move is therefore to make `1.5.2` about **input assembly and lorebook discovery rules**, not about live output routing.

@@ -4,68 +4,271 @@
 
 Secret Info Panel is a NovelAI `.naiscript` project that generates and manages a private secret-information continuity block during story sessions.
 
-The current live baseline is `1.5.0.5`. The project is still sidebar-first, but it is no longer only a pre-routing prototype. The live script now includes canonical output handling, preserved raw diagnostic layers, routed-state scaffolding, and tempStorage-backed edit-session handling.
+The current live baseline is `1.5.1.6`. This is no longer the older sidebar-first `1.5.0.5` state. The live script now includes the `1.5.1` UI/config-groundwork packet on top of the preserved canonical-output and route-scaffold contracts.
 
-This document describes the current implemented baseline on `main`. It should be read as architecture and contract guidance for the live script, not as a promise that every future roadmap goal is already implemented.
+This document describes the current implemented baseline on `main`. It should be read as architecture and contract guidance for the live script, not as a promise that every later roadmap goal is already implemented.
 
-## Current Baseline
+## Current baseline
 
-- promoted live revision: `1.5.0.5`
+- promoted live revision: `1.5.1.6`
 - live script: `live/secret_info_panel_live.naiscript`
-- promoted source artifact: `archive/code/secret_info_panel_v1_5_0_5.naiscript`
+- promoted source artifact: `archive/code/secret_info_panel_v1_5_1_6.naiscript`
+- current phase position: post-`1.5.1`, pre-`1.5.2`
 
-The implementation now separates prompt fields, current output, generated/runtime state, prompt preview, and routed state.
+The implementation now combines:
 
-## Important Initialization Behavior
+- preserved `1.5.0.x` canonical-output and routed-state contracts
+- `1.5.1` UI/config groundwork and surface split
+- preview-only output planning state
+- prepared but not yet wired input-source controls for `1.5.2`
 
-The current live script intentionally performs a **fresh-session reset on script load**.
+## Important initialization behavior
 
-Interpret this carefully:
+The current live script does **not** normally perform a destructive clean-slate reset on script load.
 
-- the script does use `storyStorage` for its durable per-story working state during active use
-- the script does use `tempStorage` for session-only convenience state
-- but the current initialization flow intentionally clears the panel's own saved state and rebuilds a fresh baseline when the script loads
+Interpret the current behavior this way:
 
-This is **intended behavior**, not an accidental persistence failure.
+- `storyStorage` is used for durable per-story working state
+- `tempStorage` is used for ephemeral session and UI convenience state
+- `onScriptsLoaded` restores the panel and clears stale auto-refresh markers when needed
+- destructive reset now lives behind the guarded `Reset Panel State` action
+- `initializeFreshSession()` still exists, but it is an explicit reset path, not the normal initialization path
 
-Therefore, the present architecture should be read as:
+Therefore, the current architecture should be read as:
 
 - state containers and ownership boundaries are real and important
-- the current script still starts from a clean slate on initialization by design
-- future work should preserve that deliberate reset behavior unless the project direction explicitly changes later
+- durable panel state is expected to survive normal reloads
+- destructive reset is explicit and guarded
+- future work should preserve that distinction unless project direction changes deliberately later
 
-## High-Level Architecture
+## High-level architecture
 
-The current script is best understood as six layers:
+The current script is best understood as seven layers:
 
-1. **Prompt fields** - persistent user-editable prompt text and config-like values during active use
-2. **Prompt preview** - rebuilt canonical prompt artifact used for generation
-3. **Current output contract** - canonical editable body plus derived display text
-4. **Generated runtime state** - timestamps, raw response capture, prompt dynamic block, status, history, and turn-seed counters
-5. **Routed-state scaffolding** - route target metadata, ownership placeholders, signatures, and receipt placeholder state for future routing
+1. **Prompt fields** - persistent user-editable prompt text and config-like values
+2. **Current output contract** - committed canonical body plus derived display text
+3. **Generated runtime state** - timestamps, raw response capture, prompt dynamic block, status, history, auto-refresh markers, and turn-seed counters
+4. **Prompt preview** - rebuilt prompt artifact used as the generation source of truth inside the script
+5. **Routed-state planner scaffold** - route target metadata, ownership placeholders, desired signatures, and preview-planning state for future routing
 6. **Ephemeral edit-session state** - tempStorage-backed active field and draft values for the current session only
+7. **UI runtime state** - workspace tab, runtime log, busy flags, and reset confirmation state
 
-## Primary Functional Cycle
+## Primary functional cycle
 
 The current live cycle is:
 
-1. initialize a fresh session on script load
-2. read current story context from NovelAI
-3. rebuild the prompt preview from current inputs
+1. load current state and rebuild the panel surfaces
+2. read current story context from NovelAI during refresh
+3. rebuild the prompt preview from the current inputs
 4. call `generateWithStory`
 5. receive one compact `Secret information:` paragraph
 6. normalize the result into canonical body and derived display text
-7. display it in the sidebar
-8. save runtime diagnostics and append a bounded history entry
+7. store diagnostics and append bounded history
+8. expose the result through the current Secret Info workspace tab and sidebar summaries
 
-The script still does **not** yet perform finished production routing into Memory, Author's Note, or Lorebook. It now carries the route-layer contract needed for that later work.
+The script still does **not** yet perform finished production routing into Memory, Author's Note, or Lorebook. It carries planning scaffolding for that later work.
 
-## Prompt Model
+## UI surface model
 
-The prompt is built from three inputs:
+The current UI should be read as two coordinated surfaces.
+
+### Sidebar
+
+The sidebar is now the compact monitoring, advanced-controls, and diagnostics plane.
+
+Its intended sections are:
+
+- **Status Info**
+- **Advanced**
+- **Diagnostics**
+
+The sidebar is no longer the dense editing surface.
+
+### Workspace / script panel
+
+The script panel is now the dense working and editing plane.
+
+The top-row workspace tabs are:
+
+- `Secret Info`
+- `Prompting`
+- `Inputs`
+- `Outputs`
+- `History`
+
+Interpretation rule:
+
+- this tab split is current baseline, not a future concept
+- `Inputs` and `Outputs` were split early so `1.5.2` can build on stable surfaces rather than reshuffling the UI again
+
+## Storage layout
+
+### `storyStorage` keys
+
+- `secret-info-panel-prompt-fields-v1`
+- `secret-info-panel-current-output-v1`
+- `secret-info-panel-generated-state-v1`
+- `secret-info-panel-prompt-preview-v1`
+- `secret-info-panel-routed-state-v1`
+
+### `tempStorage` keys
+
+- `secret-info-panel-runtime-log-v1`
+- `secret-info-panel-edit-active-field-v1`
+- `secret-info-panel-edit-secret-info-label-draft-v1`
+- `secret-info-panel-edit-secret-info-draft-v1`
+- `secret-info-panel-edit-output-wrapper-draft-v1`
+- `secret-info-panel-edit-system-prompt-draft-v1`
+- `secret-info-panel-edit-script-prompt-draft-v1`
+- `secret-info-panel-workspace-tab-v1`
+
+### Storage interpretation rule
+
+- `storyStorage` holds durable per-story state
+- `tempStorage` holds ephemeral draft or UI-session state
+- avoid `historyStorage` unless a future setting is explicitly meant to follow undo/redo semantics
+
+## Persistent data containers
+
+### Prompt fields
+
+Stores prompt text and config-like values such as:
 
 - `scriptSystemPrompt`
-- dynamic prompt block rebuilt from runtime state
+- `scriptPrompt`
+- `generationTemperature`
+- `generationMaxTokens`
+- `maxHistoryEntries`
+- `autoRefreshEachTurn`
+- `autoRefreshEveryTurns`
+- `autoRefreshResetOnManualRefresh`
+- `inputAutoDiscoverCharacters`
+- `inputUseSelectedLorebooks`
+- `outputWrapper`
+- `secretInfoLabel`
+
+### Current output
+
+Stores the live output contract:
+
+- `secretInfo`
+- `canonicalBody`
+- `derivedDisplayText`
+
+### Generated state
+
+Stores runtime and audit data such as:
+
+- `lastUpdatedAt`
+- `lastModel`
+- `lastStatus`
+- `lastError`
+- `lastStoryTitle`
+- `lastPromptDynamic`
+- `lastRawResponse`
+- `lastRawResponseBody`
+- `canonicalContractVersion`
+- `routedFragmentStatus`
+- `routingReceiptStatus`
+- history state
+- auto-refresh state
+- turn/seed counters
+
+### Prompt preview
+
+Stores `promptPreview`.
+
+### Routed state
+
+Stores route-layer planning scaffolding such as:
+
+- `contractVersion`
+- `adapterContractVersion`
+- `sourceCanonicalSignature`
+- `sourceCanonicalUpdatedAt`
+- `routedFragmentStatus`
+- `routingReceiptStatus`
+- `lastReceiptSweepAt`
+- target-level state for `memory`, `authorsNote`, and `lorebook`
+
+Each target already carries fields for:
+
+- adapter identity
+- ownership markers
+- desired signatures
+- apply timestamps
+- applied signatures
+- receipt status
+- receipt errors
+- preview-planned fragments and plan status
+
+## Canonical output contract
+
+The current baseline should be read as distinct layers:
+
+1. raw model response text
+2. raw response body
+3. committed canonical body
+4. derived display text
+5. routed preview / planner fragments
+
+Key downstream rules:
+
+- `canonicalBody` is the authoritative downstream source
+- `derivedDisplayText` is rebuilt from committed canonical body
+- `secretInfo` remains the visible stored display representation
+- raw model output remains diagnostic only
+- future routing must derive from committed canonical body, not raw output
+
+## Secret Info editing model
+
+The current live baseline includes explicit edit-session handling and separate label/body flows.
+
+### Current editable surfaces
+
+- Secret Info label
+- Secret Info body
+- output wrapper
+- script system prompt
+- script prompt
+
+### Current rules
+
+- one editable field is active at a time
+- drafts live in `tempStorage` during the session
+- saving commits changes back into `storyStorage`
+- cancelling clears the temp draft state
+- label editing is separate from body editing
+- secret-info editing remains body-only at the canonical edit layer
+- label-only saves do not create history entries
+- label saves scrub trailing colon-like suffixes
+- unsaved drafts do not silently become authoritative state
+
+### Secret Info action model
+
+Idle state:
+
+- `Edit Label`
+- `Edit Body`
+- `Reset Label`
+- `Clear Block`
+
+Label edit state:
+
+- `Save Label`
+- `Cancel`
+
+Body edit state:
+
+- `Save Body`
+- `Cancel`
+
+## Prompt model
+
+The generation prompt is built from three inputs:
+
+- `scriptSystemPrompt`
+- a dynamic prompt block rebuilt from runtime state
 - `scriptPrompt`
 
 The stored preview is rebuilt in this shape:
@@ -78,23 +281,19 @@ USER:
 [lastPromptDynamic]
 
 [scriptPrompt]
+```
 
 That stored prompt preview is the generation source of truth inside the script.
 
-Same-Turn Reroll Protection
+### Same-turn reroll protection
 
 Same-turn reroll protection remains a core preserved behavior.
 
-The script distinguishes between:
-
-- current displayed output
-- prompt seed output used for the current story turn
-
 The generated state tracks:
 
-- "storyTurnCounter"
-- "promptSeedTurnCounter"
-- "promptSeedSecretInfo"
+- `storyTurnCounter`
+- `promptSeedTurnCounter`
+- `promptSeedSecretInfo`
 
 Effect:
 
@@ -102,157 +301,75 @@ Effect:
 - a completed new story turn allows the next refresh to advance from the carried-forward state
 - refresh behavior is protected from same-turn recursive contamination
 
-Storage Layout
+## Inputs model
 
-storyStorage keys
+The `Inputs` tab now exists as the prepared home for `1.5.2` source assembly work.
 
-- "secret-info-panel-prompt-fields-v1"
-- "secret-info-panel-current-output-v1"
-- "secret-info-panel-generated-state-v1"
-- "secret-info-panel-prompt-preview-v1"
-- "secret-info-panel-routed-state-v1"
+Current visible homes are:
 
-tempStorage keys
+- `Auto-discover characters`
+- `Selected lorebooks`
 
-- "secret-info-panel-runtime-log-v1"
-- "secret-info-panel-edit-active-field-v1"
-- "secret-info-panel-edit-secret-info-draft-v1"
-- "secret-info-panel-edit-system-prompt-draft-v1"
-- "secret-info-panel-edit-script-prompt-draft-v1"
+Interpret these carefully:
 
-Interpretation rule:
+- they are not mutually exclusive
+- they are not functionally wired into generation yet
+- they are structural placeholders for the next packet
+- `Selected lorebooks` is intentionally basic and does not yet provide a built-in selector UI
+- later lorebook selection is expected to use a custom selector workflow
 
-- storyStorage holds the panel's durable per-story working state during active use
-- tempStorage holds ephemeral session convenience state only
-- the current initialization path intentionally clears the panel's own saved state to start from a clean baseline on script load
+## Outputs model
 
-Persistent Data Containers
+The `Outputs` tab now exists as a planning surface.
 
-Prompt fields
+Current output-facing controls include:
 
-Stores prompt text and config-like values such as:
+- `Send to Memory`
+- `Send to Author's Note`
+- `Send to Lorebook`
+- a shared editable `Wrapper` field
 
-- "scriptSystemPrompt"
-- "scriptPrompt"
-- "maxHistoryEntries"
-- "autoRefreshEachTurn"
-- "useAuthorsNoteForSecretInfo"
-- "lorebookOnlyCharacterDetection"
-- "secretInfoLabel"
+Interpret these carefully:
 
-Current output
+- the target toggles are planner state, not live output writes
+- the wrapper is editable now, but it is a prepared config field rather than an active routing engine
+- Outputs remains planning-only in the current baseline
 
-Stores the live output contract:
+## History and refresh model
 
-- "secretInfo"
-- "canonicalBody"
-- "derivedDisplayText"
+### History
 
-Interpretation rule:
+The current history surface includes:
 
-- "canonicalBody" is the editable continuity body
-- "derivedDisplayText" is the rebuilt visible display layer
-- "secretInfo" remains the currently stored visible representation
+- `maxHistoryEntries` under the `History` tab
+- a slider and typed entry pathway
+- explicit `Clear Log`
+- bounded stored history entries
 
-Generated state
+Current trimming behavior:
 
-Stores runtime and audit data such as:
+- changing the max history value does not immediately trim stored history
+- trim occurs on the next refresh/save cycle that persists history
 
-- "lastUpdatedAt"
-- "lastModel"
-- "lastStatus"
-- "lastError"
-- "lastStoryTitle"
-- "lastPromptDynamic"
-- "lastRawResponse"
-- "lastRawResponseBody"
-- "canonicalContractVersion"
-- "routedFragmentStatus"
-- "routingReceiptStatus"
-- history state
-- turn/seed counters
-- auto-refresh markers
+### Refresh
 
-Prompt preview
+The current header controls include:
 
-Stores "promptPreview".
-
-Routed state
-
-Stores route-layer scaffolding such as:
-
-- "contractVersion"
-- "adapterContractVersion"
-- "sourceCanonicalSignature"
-- "sourceCanonicalUpdatedAt"
-- "routedFragmentStatus"
-- "routingReceiptStatus"
-- "lastReceiptSweepAt"
-- target-level state for "memory", "authorsNote", and "lorebook"
-
-Each target already carries fields for adapter identity, ownership markers, desired signatures, apply timestamps, applied signatures, receipt status, and receipt errors.
-
-Canonical Output Contract
-
-The current baseline should be read as distinct layers:
-
-1. raw model response
-2. raw response body
-3. canonical body
-4. derived display text
-5. derived route fragments
-
-Key downstream rule:
-
-route from canonical body, not from raw diagnostic output
-
-Edit-Session Model
-
-The current live baseline includes explicit edit-session handling.
-
-Current editable surfaces:
-
-- secret-info output body
-- script system prompt
-- script prompt
+- `Refresh`
+- auto-refresh toggle
+- auto-refresh cadence field
 
 Current rules:
 
-- one dense field is edited at a time
-- drafts live in tempStorage during the session
-- saving commits changes back into storyStorage
-- cancelling clears the temp draft state
-- the visible "Secret information:" label is rebuilt automatically and is not part of the canonical body
-- unsaved drafts should not silently become authoritative state
+- manual refresh remains the safe baseline
+- auto-refresh remains opt-in only
+- cadence is constrained to `1` through `15`
+- cadence input is disabled while auto-refresh is disabled
+- a visible toast appears when background refresh starts so users know the script is already working
 
-Sidebar UI Structure
+## Diagnostics and planner visibility
 
-The sidebar remains the active operating surface in "1.5.0.5".
-
-Major sections currently include:
-
-1. action controls
-2. current secret-information output
-3. recent history log
-4. raw recent log viewer
-5. script system prompt
-6. script prompt
-7. diagnostics
-
-Diagnostics remains the final section in the sidebar.
-
-Intended UI Direction
-
-The current live implementation is still sidebar-first, but the broader project direction now treats the UI surfaces this way:
-
-- sidebar = compact monitoring and control surface
-- script panel = future dense working and editing surface
-
-That script-panel migration is not yet implemented in the live file. The sidebar remains the actual working UI today.
-
-Diagnostics Role
-
-Diagnostics is a compact health and inspection surface rather than a raw dump box.
+Diagnostics is now a compact health and inspection surface rather than a raw dump box.
 
 Current diagnostics cover:
 
@@ -264,63 +381,64 @@ Current diagnostics cover:
 - canonical contract and adapter contract versions
 - route adapter summary
 - route receipt summary
+- route planner summary
 - warnings
-- expandable detail areas for last error, raw response, dynamic prompt block, and validation notes
+- expandable detail areas for last error, raw response, prompt dynamic block, contracts, routing, checks, and validation notes
 
-This means the route scaffolding is already inspectable even though full routing is not yet implemented.
+This means the route scaffolding is inspectable even though full routing is not yet implemented.
 
-Hook Lifecycle
+## Hook lifecycle
 
 The live script uses these NovelAI hook surfaces:
 
-- "onResponse"
-- "onGenerationRequested"
-- "onGenerationEnd"
-- "onScriptsLoaded"
+- `onResponse`
+- `onGenerationRequested`
+- `onGenerationEnd`
+- `onScriptsLoaded`
 
 They are used to:
 
 - track completed story generations
 - coordinate auto-refresh behavior
 - distinguish user story turns from script work
-- initialize a fresh session on script load
 - prevent older auto-refresh work from colliding with newer story generations
+- restore the panel on script load without performing an automatic destructive reset
 
-Current Non-Features
+## Current non-features
 
 The current implementation still does not provide a finished production system for:
 
 - applying routed output into Memory
 - applying routed output into Author's Note
 - applying routed output into Lorebook entries
-- dense script-panel editor migration
-- preview-only target planning beyond scaffold/signature status
+- receipt validation against live target content
+- ownership-marker splicing into live targets
+- manual lorebook selector UX
+- multi-character output expansion
+- non-character generalized source handling
+- finished live source assembly for `Inputs`
+- broad routing/default-behavior architecture
 - rigid JSON extraction
-- broad migration compatibility across old revisions
+- broad compatibility scaffolding across older archived revisions
 
-Implemented Baseline Summary
+## Implemented baseline summary
 
-At "1.5.0.5", the script is best understood as:
+At `1.5.1.6`, the script is best understood as:
 
-- a sidebar-first private continuity generator
-- using split prompt fields and stored prompt preview
-- preserving raw diagnostic response layers
-- maintaining canonical body vs derived display separation
-- tracking runtime and history state separately
-- carrying routed-state scaffolding for future target adapters
-- protecting same-turn rerolls from recursive contamination
-- using tempStorage-backed edit sessions for dense field edits
-- intentionally starting from a clean session baseline on script load
-- keeping diagnostics last in the sidebar
+- a private continuity generator with preserved canonical-output contracts
+- a two-surface UI with compact sidebar monitoring and dense workspace editing
+- a split workspace with stable `Secret Info`, `Prompting`, `Inputs`, `Outputs`, and `History` homes
+- a system with separate label/body editing and explicit edit-session handling
+- a planner-ready route scaffold for future targets
+- a project that has prepared the next packet without implementing live routing yet
 
-That is the current implemented architecture baseline that later docs should build from.
-
-Interpretation Guardrails
+## Interpretation guardrails
 
 When reading this architecture against the roadmap:
 
-- do not treat routed-state scaffolding as proof that live routing is already implemented
-- do not treat the storage split as proof that the script preserves its panel state unchanged through initialization
-- do treat canonical output ownership, reroll protection, and route-layer scaffolding as real baseline contracts
-- do treat clean-slate initialize behavior as intended current behavior
-- do treat later UI migration and live routing as future work layered on top of the existing baseline
+- do not treat routed-state scaffolding or target toggles as proof that live routing already exists
+- do not treat the `Inputs` tab as proof that source assembly is already wired
+- do treat the `1.5.1` surface split and config placement decisions as current baseline contracts
+- do treat the guarded reset behavior as current intended behavior
+- do treat canonical output ownership, reroll protection, and route-planner scaffolding as real baseline contracts
+- do treat `1.5.2` input assembly and lorebook discovery work as the next major packet layered on top of this baseline
