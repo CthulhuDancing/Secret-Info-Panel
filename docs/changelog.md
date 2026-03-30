@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-03-29
+
+- promoted `archive/code/secret_info_panel_v1_5_1_4c.naiscript` to `live/secret_info_panel_live.naiscript`
+- updated `live/current_version.md` to reflect promoted artifact `1.5.1.4c`
+- aligned `docs/README.md` and `docs/secret_info_panel_minimap.md` to the current promoted artifact note
+- added `SOURCE_KNOWLEDGE_GUIDE.md` and referenced it from `README.md`
+- archived the current `1.5.1` snapshot sequence under `archive/code/`
+
 ## 2026-03-28
 
 - promoted `archive/code/secret_info_panel_v1_5_0_7c.naiscript` to `live/secret_info_panel_live.naiscript`
@@ -31,6 +39,6 @@
 
 ## Recent Known Versions
 
-- `1.5.0.7c` is the current promoted live revision
-- `1.5.0.7` is preserved as the prior archived neighboring revision
+- `1.5.1.4c` is the current promoted live revision
+- `1.5.1.4b` is preserved as the prior archived neighboring revision
 - earlier detailed version history remains in archived filenames and materials until manually normalized

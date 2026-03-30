@@ -2,6 +2,8 @@
 
 Secret Info Panel is a NovelAI `.naiscript` project for generating and managing a private secret-information continuity block during story sessions. The authoritative working script lives in `live/secret_info_panel_live.naiscript`, the current project documentation lives in `docs/`, runtime and test artifacts live in `data/`, and historical revisions, superseded docs, archived data, and fork/proposal variants live under `archive/`.
 
+For GPT-oriented repo navigation guidance, especially in low-tooling source-knowledge environments, see `SOURCE_KNOWLEDGE_GUIDE.md`.
+
 ## Repository Layout
 
 - `live/` contains the current authoritative script and version note
@@ -9,6 +11,7 @@ Secret Info Panel is a NovelAI `.naiscript` project for generating and managing 
 - `data/` contains samples, test exports, and logs
 - `archive/` contains historical code, docs, data, and forks
 - `scratch/` is reserved for temporary work files and transient handoff/context files
+- `SOURCE_KNOWLEDGE_GUIDE.md` provides a conservative navigation guide for GPTs using the repo as source knowledge
 
 ## Documentation Reading Order
 
