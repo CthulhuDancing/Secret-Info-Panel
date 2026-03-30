@@ -69,8 +69,6 @@ Typical uses:
 Current important scratch files:
 
 - `scratch/secret_info_panel_handoff_1_5_2_breakpoint.md`
-- `scratch/secret_info_panel_handoff_1_5_1_breakpoint.md`
-- `scratch/CONTEXT_HANDOFF_ROADMAP.md`
 
 How to use `scratch/` safely:
 
@@ -133,12 +131,11 @@ When architecture text conflicts with the live script, the live script wins.
 Read:
 
 1. `scratch/secret_info_panel_handoff_1_5_2_breakpoint.md` if present
-2. `scratch/secret_info_panel_handoff_1_5_1_breakpoint.md` if present
-3. `docs/secret_info_panel_roadmap.md`
-4. `docs/secret_info_panel_progress_tracker.md`
-5. `docs/changelog.md`
+2. `docs/secret_info_panel_roadmap.md`
+3. `docs/secret_info_panel_progress_tracker.md`
+4. `docs/changelog.md`
 
-Interpret this as "recent intent plus older roadmap direction," not as a single perfectly synchronized source.
+Interpret this as "recent intent plus older roadmap direction," not as a single perfectly synchronized source. If older handoff context is needed, check `archive/docs/`.
 
 ### If asked "How did the repo get here?"
 
@@ -170,8 +167,6 @@ Read the most specific and current-looking file first.
 In this repo, a good default order is:
 
 1. `scratch/secret_info_panel_handoff_1_5_2_breakpoint.md`
-2. `scratch/secret_info_panel_handoff_1_5_1_breakpoint.md`
-3. `scratch/CONTEXT_HANDOFF_ROADMAP.md`
 
 Use `scratch/` to answer questions like:
 
@@ -254,7 +249,7 @@ If a GPT needs a fast answer with minimal risk:
 - repo history: `docs/changelog.md`
 - docs index: `docs/README.md`
 - quick navigation: `docs/secret_info_panel_minimap.md`
-- next-phase handoff: `scratch/secret_info_panel_handoff_1_5_1_breakpoint.md`
+- next-phase handoff: `scratch/secret_info_panel_handoff_1_5_2_breakpoint.md`
 - historical versions: `archive/code/`
 
 ## Final Interpretation Rule

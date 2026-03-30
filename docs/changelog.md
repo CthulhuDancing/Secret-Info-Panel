@@ -2,6 +2,7 @@
 
 ## 2026-03-29
 
+- moved older scratch handoff/context files into `archive/docs/` and preserved only the current `1.5.2` handoff in `scratch/`
 - promoted `archive/code/secret_info_panel_v1_5_1_6.naiscript` to `live/secret_info_panel_live.naiscript`
 - updated `live/current_version.md` to reflect promoted artifact `1.5.1.6`
 - aligned `docs/README.md` and `docs/secret_info_panel_minimap.md` to the current promoted artifact note

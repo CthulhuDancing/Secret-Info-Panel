@@ -13,7 +13,7 @@ The checkpoint covers:
 This handoff is written so the next agent can begin `1.5.2` without having to reconstruct why the UI looks the way it does or which future lanes were deliberately prepared.
 
 ## Source Basis and Confidence
-- Authoritative basis: the latest working chat-built artifact `secret_info_panel_v1_5_1_6.naiscript`; the prior repo breakpoint handoff `scratch/secret_info_panel_handoff_1_5_1_breakpoint.md`
+- Authoritative basis: the latest working chat-built artifact `secret_info_panel_v1_5_1_6.naiscript`; the prior repo breakpoint handoff `archive/docs/secret_info_panel_handoff_1_5_1_breakpoint.md`
 - Supporting basis: prior `1.5.1` chat decisions and patch sequence in this chat; `live/current_version.md`; `docs/secret_info_panel_roadmap.md`; `docs/secret_info_panel_architecture.md`; `docs/secret_info_panel_progress_tracker.md`
 - Inferred context: exact `1.5.2` sequencing and how the new Inputs/Outputs tabs should evolve beyond placeholder state
 - Confidence: high
@@ -64,7 +64,7 @@ Storage and state-use rules to carry into `1.5.2`:
 Treat these as the primary references for continuing into `1.5.2`:
 
 1. `secret_info_panel_v1_5_1_6.naiscript` — latest chat-built working artifact
-2. `scratch/secret_info_panel_handoff_1_5_1_breakpoint.md` — prior durable phase handoff
+2. `archive/docs/secret_info_panel_handoff_1_5_1_breakpoint.md` — prior durable phase handoff
 3. `live/current_version.md` — prior promoted repo baseline note
 4. `docs/secret_info_panel_roadmap.md` — future-direction guardrails
 5. `docs/secret_info_panel_architecture.md` — still useful for preserved contracts, but stale relative to the latest chat-built UI
@@ -248,7 +248,7 @@ Strong interpretation of what `1.5.2` should focus on first:
 The next chat should read these first:
 
 1. `secret_info_panel_v1_5_1_6.naiscript`
-2. `scratch/secret_info_panel_handoff_1_5_1_breakpoint.md`
+2. `archive/docs/secret_info_panel_handoff_1_5_1_breakpoint.md`
 3. this handoff
 4. `live/current_version.md`
 5. `docs/secret_info_panel_roadmap.md`

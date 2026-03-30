@@ -17,7 +17,7 @@ This is the working authoritative script file and the default starting point for
 ## Scratch / temporary context
 
 - `scratch/` for temporary work files and transient handoff/context files
-- `scratch/CONTEXT_HANDOFF_ROADMAP.md` for compact GPT handoff context when needed
+- `scratch/secret_info_panel_handoff_1_5_2_breakpoint.md` for the current active breakpoint handoff when needed
 
 ## Archive Locations
 
