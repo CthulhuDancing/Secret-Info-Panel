@@ -2,6 +2,12 @@
 
 ## 2026-03-29
 
+- promoted `archive/code/secret_info_panel_v1_5_1_6.naiscript` to `live/secret_info_panel_live.naiscript`
+- updated `live/current_version.md` to reflect promoted artifact `1.5.1.6`
+- aligned `docs/README.md` and `docs/secret_info_panel_minimap.md` to the current promoted artifact note
+- renamed `archive/code/secret_info_panel_v1_5_1.naiscript` to `archive/code/secret_info_panel_v1_5_1_0.naiscript` to keep the lineage sequence explicit
+- added `archive/code/secret_info_panel_v1_5_1_5.naiscript`, `archive/code/secret_info_panel_v1_5_1_5a.naiscript`, `archive/code/secret_info_panel_v1_5_1_5b.naiscript`, and `archive/code/secret_info_panel_v1_5_1_6.naiscript`
+- added `scratch/secret_info_panel_handoff_1_5_2_breakpoint.md` as the next-phase handoff
 - promoted `archive/code/secret_info_panel_v1_5_1_4c.naiscript` to `live/secret_info_panel_live.naiscript`
 - updated `live/current_version.md` to reflect promoted artifact `1.5.1.4c`
 - aligned `docs/README.md` and `docs/secret_info_panel_minimap.md` to the current promoted artifact note
@@ -39,6 +45,6 @@
 
 ## Recent Known Versions
 
-- `1.5.1.4c` is the current promoted live revision
-- `1.5.1.4b` is preserved as the prior archived neighboring revision
+- `1.5.1.6` is the current promoted live revision
+- `1.5.1.5b` is preserved as the prior archived neighboring revision
 - earlier detailed version history remains in archived filenames and materials until manually normalized

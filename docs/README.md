@@ -24,7 +24,7 @@ The live script is the implementation truth. The version note is the promoted-re
 ## Current baseline
 
 - promoted live script: `live/secret_info_panel_live.naiscript`
-- current working version: `1.5.1.4c`
+- current working version: `1.5.1.6`
 - date aligned: `2026-03-29`
 
 ## Interpretation rule
